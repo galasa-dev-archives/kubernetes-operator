@@ -1,0 +1,53 @@
+apiVersion: galasa.dev/v2alpha1
+kind: GalasaEcosystem
+metadata:
+  name: basic-ecosystem
+  namespace: galasa
+spec:
+  hostname: "YOUR_CLUSTER_HOSTNAME"
+  galasaVersion: "0.18.0"
+  busyboxImage: your.image.registry/library/busybox:latest
+  componentsSpec:
+    cps:
+      image: "quay.io/coreos/etcd:v3.4.3"
+      imagePullPolicy: "Always"
+      # Currently limited to node clusters
+      replicas: 1
+      storage: "1Gi"
+      storageClassName: "your-stroage-class-name"
+      nodeSelector:
+        kubernetes.io/arch: amd64
+    ras:
+      image: "your.image.registry/library/couchdb:2.3.1"
+      imagePullPolicy: "Always"
+      replicas: 1
+      storage: "5Gi"
+      storageClassName: "your-stroage-class-name"
+      nodeSelector:
+        beta.kubernetes.io/arch: amd64
+    api:
+      image: "your.image.registry/galasadev/galasa-boot-embedded-amd64:customVersion"
+      imagePullPolicy: "Always"
+      replicas: 1
+      storage: "1Gi"
+      storageClassName: "your-stroage-class-name"
+      nodeSelector:
+        beta.kubernetes.io/arch: amd64
+    enginecontroller: 
+      image: "your.image.registry/galasadev/galasa-boot-embedded-amd64:customVersion"
+      imagePullPolicy: "Always"
+      replicas: 1
+      nodeSelector:
+        beta.kubernetes.io/arch: amd64
+    resmon: 
+      image: "your.image.registry/galasadev/galasa-boot-embedded-amd64:customVersion"
+      imagePullPolicy: "Always"
+      replicas: 1
+      nodeSelector:
+        beta.kubernetes.io/arch: amd64
+    metrics: 
+      image: "your.image.registry/galasadev/galasa-boot-embedded-amd64:customVersion"
+      imagePullPolicy: "Always"
+      replicas: 1
+      nodeSelector:
+        beta.kubernetes.io/arch: amd64
