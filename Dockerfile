@@ -15,6 +15,6 @@ ENV GOPATH=/go
 
 RUN go build -o $GOPATH/bin/operator $GOPATH/src/github.com/galasa-dev/galasa-kubernetes-operator/cmd/operator/main.go
 
-FROM ${dockerRepository}/library/alpine:latest
+FROM ${dockerRepository}/library/alpine:3.14
 COPY --from=builder /go/bin/operator /go/bin/operator
 ENTRYPOINT ["/go/bin/operator"]
