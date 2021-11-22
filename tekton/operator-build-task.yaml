@@ -1,0 +1,43 @@
+#
+# Copyright contributors to the Galasa project 
+#
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: operator-build-task
+  namespace: galasa-tekton
+spec:
+  workspaces:
+  - name: git-workspace
+    optional: false
+    mountpath: /workspace/git
+  params:
+  - name: imageName
+    type: string
+  - name: distBranch
+    type: string
+  - name: dockerBuildRepo
+    type: string
+    default: nexus.cics-ts.hur.hdclab.intranet.ibm.com:8080
+  - name: noPush
+    type: string
+    default: ""
+  steps:
+  - name: docker-build
+    workingDir: /workspace/git/galasa-kubernetes-operator/
+    image: $(params.dockerRepo)/library/kaniko-executor:latest
+    env:
+    - name: DOCKER_CONFIG
+      value: /tekton/home/.docker
+    command:
+    - /kaniko/executor
+    - --dockerfile=./Dockerfile
+    - --context=/workspace/git/galasa-kubernetes-operator
+    - --destination=$(params.imageName)
+    - --oci-layout-path=/workspace/git/galasa-kubernetes-operator/image-digest
+    - --skip-tls-verify
+    - --skip-tls-verify-pull
+    - --single-snapshot
+    - --verbosity=info
+    - $(params.noPush)
+    - --build-arg=dockerRepository=$(params.dockerBuildRepo)

@@ -1,0 +1,86 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: galasa-ecosystem-operator
+  namespace: jdavies47
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/exec
+  - services
+  - services/finalizers
+  - endpoints
+  - events
+  - configmaps
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - daemonsets
+  - replicasets
+  - statefulsets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - "galasa.dev"
+  resources:
+  - "galasaecosystems"
+  - "galasacpscomponents"
+  - "galasarascomponents"
+  - "galasaresmoncomponents"
+  - "galasaapicomponents"
+  - "galasametricscomponents"
+  - "galasaenginecontrollercomponents"
+  - "galasatoolboxcomponents"
+  - "galasacpscomponents/status"
+  - "galasaecosystems/status"
+  - "galasarascomponents/status"
+  - "galasaresmoncomponents/status"
+  - "galasaapicomponents/status"
+  - "galasametricscomponents/status"
+  - "galasaenginecontrollercomponents/status"
+  - "galasatoolboxcomponents/status"
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - "coordination.k8s.io"
+  resources:
+    - leases
+  verbs:
+    - get
+    - create
+    - update

@@ -1,0 +1,520 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: galasa-ecosystem-operator
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/exec
+  - services
+  - services/finalizers
+  - endpoints
+  - events
+  - configmaps
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - daemonsets
+  - replicasets
+  - statefulsets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - "galasa.dev"
+  resources:
+  - "galasaecosystems"
+  - "galasacpscomponents"
+  - "galasarascomponents"
+  - "galasaresmoncomponents"
+  - "galasaapicomponents"
+  - "galasametricscomponents"
+  - "galasaenginecontrollercomponents"
+  - "galasatoolboxcomponents"
+  - "galasacpscomponents/status"
+  - "galasaecosystems/status"
+  - "galasarascomponents/status"
+  - "galasaresmoncomponents/status"
+  - "galasaapicomponents/status"
+  - "galasametricscomponents/status"
+  - "galasaenginecontrollercomponents/status"
+  - "galasatoolboxcomponents/status"
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - "coordination.k8s.io"
+  resources:
+    - leases
+  verbs:
+    - get
+    - create
+    - update
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: galasa-ecosystem-operator
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: galasa-ecosystem-operator
+subjects:
+- kind: ServiceAccount
+  name: galasa-ecosystem-operator
+roleRef:
+  kind: Role
+  name: galasa-ecosystem-operator
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: config-logging
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+data:
+  loglevel.controller: info
+  loglevel.webhook: info
+  zap-logger-config: |
+    {
+      "level": "info",
+      "development": false,
+      "sampling": {
+        "initial": 100,
+        "thereafter": 100
+      },
+      "outputPaths": ["stdout"],
+      "errorOutputPaths": ["stderr"],
+      "encoding": "json",
+      "encoderConfig": {
+        "timeKey": "ts",
+        "levelKey": "level",
+        "nameKey": "logger",
+        "callerKey": "caller",
+        "messageKey": "msg",
+        "stacktraceKey": "stacktrace",
+        "lineEnding": "",
+        "levelEncoder": "",
+        "timeEncoder": "iso8601",
+        "durationEncoder": "",
+        "callerEncoder": ""
+      }
+    }
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasaapicomponents.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        # One can use x-kubernetes-preserve-unknown-fields: true
+        # at the root of the schema (and inside any properties, additionalProperties)
+        # to get the traditional CRD behaviour that nothing is pruned, despite
+        # setting spec.preserveUnknownProperties: false.
+        #
+        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+        # See issue: https://github.com/knative/serving/issues/912
+        x-kubernetes-preserve-unknown-fields: true
+    # Opt into the status subresource so metadata.generation
+    # starts to increment
+    subresources:
+      status: {}
+  names:
+    kind: GalasaApiComponent
+    plural: galasaapicomponents
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasacpscomponents.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        # One can use x-kubernetes-preserve-unknown-fields: true
+        # at the root of the schema (and inside any properties, additionalProperties)
+        # to get the traditional CRD behaviour that nothing is pruned, despite
+        # setting spec.preserveUnknownProperties: false.
+        #
+        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+        # See issue: https://github.com/knative/serving/issues/912
+        x-kubernetes-preserve-unknown-fields: true
+    # Opt into the status subresource so metadata.generation
+    # starts to increment
+    subresources:
+      status: {}
+  names:
+    kind: GalasaCpsComponent
+    plural: galasacpscomponents
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasaenginecontrollercomponents.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        # One can use x-kubernetes-preserve-unknown-fields: true
+        # at the root of the schema (and inside any properties, additionalProperties)
+        # to get the traditional CRD behaviour that nothing is pruned, despite
+        # setting spec.preserveUnknownProperties: false.
+        #
+        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+        # See issue: https://github.com/knative/serving/issues/912
+        x-kubernetes-preserve-unknown-fields: true
+    # Opt into the status subresource so metadata.generation
+    # starts to increment
+    subresources:
+      status: {}
+  names:
+    kind: GalasaEngineControllerComponent
+    plural: galasaenginecontrollercomponents
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasametricscomponents.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        # One can use x-kubernetes-preserve-unknown-fields: true
+        # at the root of the schema (and inside any properties, additionalProperties)
+        # to get the traditional CRD behaviour that nothing is pruned, despite
+        # setting spec.preserveUnknownProperties: false.
+        #
+        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+        # See issue: https://github.com/knative/serving/issues/912
+        x-kubernetes-preserve-unknown-fields: true
+    # Opt into the status subresource so metadata.generation
+    # starts to increment
+    subresources:
+      status: {}
+  names:
+    kind: GalasaMetricsComponent
+    plural: galasametricscomponents
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasarascomponents.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        # One can use x-kubernetes-preserve-unknown-fields: true
+        # at the root of the schema (and inside any properties, additionalProperties)
+        # to get the traditional CRD behaviour that nothing is pruned, despite
+        # setting spec.preserveUnknownProperties: false.
+        #
+        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+        # See issue: https://github.com/knative/serving/issues/912
+        x-kubernetes-preserve-unknown-fields: true
+    # Opt into the status subresource so metadata.generation
+    # starts to increment
+    subresources:
+      status: {}
+  names:
+    kind: GalasaRasComponent
+    plural: galasarascomponents
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasaresmoncomponents.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        # One can use x-kubernetes-preserve-unknown-fields: true
+        # at the root of the schema (and inside any properties, additionalProperties)
+        # to get the traditional CRD behaviour that nothing is pruned, despite
+        # setting spec.preserveUnknownProperties: false.
+        #
+        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+        # See issue: https://github.com/knative/serving/issues/912
+        x-kubernetes-preserve-unknown-fields: true
+    # Opt into the status subresource so metadata.generation
+    # starts to increment
+    subresources:
+      status: {}
+  names:
+    kind: GalasaResmonComponent
+    plural: galasaresmoncomponents
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasatoolboxcomponents.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        # One can use x-kubernetes-preserve-unknown-fields: true
+        # at the root of the schema (and inside any properties, additionalProperties)
+        # to get the traditional CRD behaviour that nothing is pruned, despite
+        # setting spec.preserveUnknownProperties: false.
+        #
+        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+        # See issue: https://github.com/knative/serving/issues/912
+        x-kubernetes-preserve-unknown-fields: true
+    # Opt into the status subresource so metadata.generation
+    # starts to increment
+    subresources:
+      status: {}
+  names:
+    kind: GalasaToolboxComponent
+    plural: galasatoolboxcomponents
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasaecosystems.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        # One can use x-kubernetes-preserve-unknown-fields: true
+        # at the root of the schema (and inside any properties, additionalProperties)
+        # to get the traditional CRD behaviour that nothing is pruned, despite
+        # setting spec.preserveUnknownProperties: false.
+        #
+        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+        # See issue: https://github.com/knative/serving/issues/912
+        x-kubernetes-preserve-unknown-fields: true
+    # Opt into the status subresource so metadata.generation
+    # starts to increment
+    subresources:
+      status: {}
+  names:
+    kind: GalasaEcosystem
+    plural: galasaecosystems
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: galasa-ecosystem-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: galasa-ecosystem-operator
+      app.kubernetes.io/component: ecosystem
+      app.kubernetes.io/instance: default
+      app.kubernetes.io/part-of: galasa
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: galasa-ecosystem-operator
+        app.kubernetes.io/component: ecosystem
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/version: "v2alpha1"
+        app.kubernetes.io/part-of: galasa
+        app: galasa-ecosystem-operator
+        version: "v2alpha1"
+    spec:
+      serviceAccountName: galasa-ecosystem-operator
+      nodeSelector:
+        beta.kubernetes.io/arch: amd64
+      containers:
+      - name: galasa-ecosystem-operator
+        image: https://nexus.cics-ts.hur.hdclab.intranet.ibm.com:8080/jdavies47/operator-430e0bffa1c2c330313df6d413407d89:latest
+        args:
+          - "-namespace"
+          - "XXXXXXXX"
+        env:
+        - name: METRICS_DOMAIN
+          value: galasa.dev/ecosystem
+        - name: KUBERNETES_MIN_VERSION
+          value: 1.17.13
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - all
+          # User 65532 is the distroless nonroot user ID
+          runAsUser: 65532
+          runAsGroup: 65532
