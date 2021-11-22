@@ -1,3 +1,6 @@
+/*
+ * Copyright contributors to the Galasa Project
+ */
 package v2alpha1
 
 func DefaultCps() ComponentSpec {

@@ -16,7 +16,7 @@ If you wish to install the operator and ecosystem in another namespace, please a
 
 ## Ecosystem Install
 
-For installing using the default values you can simply apply a yaml like the one found in the `examples/basic.yaml`. This will use default values for attributes e.g storageClassName
+For installing using the default values for your cluster you can simply apply a yaml like the one found in the `examples/basic.yaml`. This will use default values for attributes e.g storageClassName
 
 Certain values can be overridden, please see `examples/ecosystem_with_overrides.yaml` for details
 

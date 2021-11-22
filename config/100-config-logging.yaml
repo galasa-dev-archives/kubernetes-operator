@@ -1,3 +1,6 @@
+# /*
+#  * Copyright contributors to the Galasa Project
+#  */
 kind: ConfigMap
 apiVersion: v1
 metadata:
