@@ -16,11 +16,15 @@ If you wish to install the operator and ecosystem in another namespace, please a
 
 ## Ecosystem Install
 
-For a installing using basic and default values you can simply apply a yaml like the one found in the `examples/basic.yaml`. This will use all default values for things like the stroageClassName
+For installing using the default values you can simply apply a yaml like the one found in the `examples/basic.yaml`. This will use default values for attributes e.g storageClassName
 
 Certain values can be overridden, please see `examples/ecosystem_with_overrides.yaml` for details
 
-Once the yamls have been applied, you can see the state of the ecosystem with a `kubectl get galasaecosystem` which should show if the ecosystem is ready for work load and the bootstrapURL
+Once the ecosystem have been applied, you can see the state of the ecosystem with a `kubectl get galasaecosystem` which should show if the ecosystem is ready for work load and the bootstrapURL:
+```
+NAME               CREATED                READY   BOOTSTRAPURL
+Galasa-Ecosystem   2021-11-22T10:12:21Z   true    http://example.com:30000/bootstrap
+```
 ## Development
 
 #### Code Generation

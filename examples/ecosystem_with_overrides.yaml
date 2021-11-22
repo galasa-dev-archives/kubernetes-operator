@@ -14,7 +14,7 @@ spec:
       # Currently limited to node clusters
       replicas: 1
       storage: "1Gi"
-      storageClassName: "your-stroage-class-name"
+      storageClassName: "your-storage-class-name"
       nodeSelector:
         kubernetes.io/arch: amd64
     ras:
@@ -22,32 +22,32 @@ spec:
       imagePullPolicy: "Always"
       replicas: 1
       storage: "5Gi"
-      storageClassName: "your-stroage-class-name"
+      storageClassName: "your-storage-class-name"
       nodeSelector:
-        beta.kubernetes.io/arch: amd64
+        kubernetes.io/arch: amd64
     api:
       image: "your.image.registry/galasadev/galasa-boot-embedded-amd64:customVersion"
       imagePullPolicy: "Always"
       replicas: 1
       storage: "1Gi"
-      storageClassName: "your-stroage-class-name"
+      storageClassName: "your-storage-class-name"
       nodeSelector:
-        beta.kubernetes.io/arch: amd64
+        kubernetes.io/arch: amd64
     enginecontroller: 
       image: "your.image.registry/galasadev/galasa-boot-embedded-amd64:customVersion"
       imagePullPolicy: "Always"
       replicas: 1
       nodeSelector:
-        beta.kubernetes.io/arch: amd64
+        kubernetes.io/arch: amd64
     resmon: 
       image: "your.image.registry/galasadev/galasa-boot-embedded-amd64:customVersion"
       imagePullPolicy: "Always"
       replicas: 1
       nodeSelector:
-        beta.kubernetes.io/arch: amd64
+        kubernetes.io/arch: amd64
     metrics: 
       image: "your.image.registry/galasadev/galasa-boot-embedded-amd64:customVersion"
       imagePullPolicy: "Always"
       replicas: 1
       nodeSelector:
-        beta.kubernetes.io/arch: amd64
+        kubernetes.io/arch: amd64
