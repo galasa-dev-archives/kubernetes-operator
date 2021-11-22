@@ -4,7 +4,7 @@ import "fmt"
 
 func Validate(c *GalasaEcosystem) error {
 	if c.Spec.Hostname == "" {
-		return fmt.Errorf("Hostname is a required field")
+		return fmt.Errorf("hostname is a required field")
 	}
 	return nil
 }

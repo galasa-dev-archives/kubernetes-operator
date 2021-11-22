@@ -1,7 +1,21 @@
+#
+# Copyright contributors to the Galasa project 
+#
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: galasa
+  labels:
+    app.kubernetes.io/part-of: galasa
+---
+#
+# Copyright contributors to the Galasa project 
+#
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: galasa-ecosystem-operator
+  namespace: galasa
 rules:
 - apiGroups:
   - ""
@@ -84,15 +98,23 @@ rules:
     - create
     - update
 ---
+#
+# Copyright contributors to the Galasa project 
+#
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: galasa-ecosystem-operator
+  namespace: galasa
 ---
+#
+# Copyright contributors to the Galasa project 
+#
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: galasa-ecosystem-operator
+  namespace: galasa
 subjects:
 - kind: ServiceAccount
   name: galasa-ecosystem-operator
@@ -101,10 +123,14 @@ roleRef:
   name: galasa-ecosystem-operator
   apiGroup: rbac.authorization.k8s.io
 ---
+#
+# Copyright contributors to the Galasa project 
+#
 kind: ConfigMap
 apiVersion: v1
 metadata:
   name: config-logging
+  namespace: galasa
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: galasa
@@ -137,6 +163,9 @@ data:
       }
     }
 ---
+#
+# Copyright contributors to the Galasa project 
+#
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -158,16 +187,7 @@ spec:
     schema:
       openAPIV3Schema:
         type: object
-        # One can use x-kubernetes-preserve-unknown-fields: true
-        # at the root of the schema (and inside any properties, additionalProperties)
-        # to get the traditional CRD behaviour that nothing is pruned, despite
-        # setting spec.preserveUnknownProperties: false.
-        #
-        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-        # See issue: https://github.com/knative/serving/issues/912
         x-kubernetes-preserve-unknown-fields: true
-    # Opt into the status subresource so metadata.generation
-    # starts to increment
     subresources:
       status: {}
   names:
@@ -178,6 +198,9 @@ spec:
     - galasa-ecosystems
   scope: Namespaced
 ---
+#
+# Copyright contributors to the Galasa project 
+#
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -199,16 +222,7 @@ spec:
     schema:
       openAPIV3Schema:
         type: object
-        # One can use x-kubernetes-preserve-unknown-fields: true
-        # at the root of the schema (and inside any properties, additionalProperties)
-        # to get the traditional CRD behaviour that nothing is pruned, despite
-        # setting spec.preserveUnknownProperties: false.
-        #
-        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-        # See issue: https://github.com/knative/serving/issues/912
         x-kubernetes-preserve-unknown-fields: true
-    # Opt into the status subresource so metadata.generation
-    # starts to increment
     subresources:
       status: {}
   names:
@@ -219,6 +233,9 @@ spec:
     - galasa-ecosystems
   scope: Namespaced
 ---
+#
+# Copyright contributors to the Galasa project 
+#
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -240,16 +257,7 @@ spec:
     schema:
       openAPIV3Schema:
         type: object
-        # One can use x-kubernetes-preserve-unknown-fields: true
-        # at the root of the schema (and inside any properties, additionalProperties)
-        # to get the traditional CRD behaviour that nothing is pruned, despite
-        # setting spec.preserveUnknownProperties: false.
-        #
-        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-        # See issue: https://github.com/knative/serving/issues/912
         x-kubernetes-preserve-unknown-fields: true
-    # Opt into the status subresource so metadata.generation
-    # starts to increment
     subresources:
       status: {}
   names:
@@ -260,6 +268,9 @@ spec:
     - galasa-ecosystems
   scope: Namespaced
 ---
+#
+# Copyright contributors to the Galasa project 
+#
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -281,16 +292,7 @@ spec:
     schema:
       openAPIV3Schema:
         type: object
-        # One can use x-kubernetes-preserve-unknown-fields: true
-        # at the root of the schema (and inside any properties, additionalProperties)
-        # to get the traditional CRD behaviour that nothing is pruned, despite
-        # setting spec.preserveUnknownProperties: false.
-        #
-        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-        # See issue: https://github.com/knative/serving/issues/912
         x-kubernetes-preserve-unknown-fields: true
-    # Opt into the status subresource so metadata.generation
-    # starts to increment
     subresources:
       status: {}
   names:
@@ -301,6 +303,9 @@ spec:
     - galasa-ecosystems
   scope: Namespaced
 ---
+#
+# Copyright contributors to the Galasa project 
+#
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -322,16 +327,7 @@ spec:
     schema:
       openAPIV3Schema:
         type: object
-        # One can use x-kubernetes-preserve-unknown-fields: true
-        # at the root of the schema (and inside any properties, additionalProperties)
-        # to get the traditional CRD behaviour that nothing is pruned, despite
-        # setting spec.preserveUnknownProperties: false.
-        #
-        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-        # See issue: https://github.com/knative/serving/issues/912
         x-kubernetes-preserve-unknown-fields: true
-    # Opt into the status subresource so metadata.generation
-    # starts to increment
     subresources:
       status: {}
   names:
@@ -342,6 +338,9 @@ spec:
     - galasa-ecosystems
   scope: Namespaced
 ---
+#
+# Copyright contributors to the Galasa project 
+#
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -363,16 +362,7 @@ spec:
     schema:
       openAPIV3Schema:
         type: object
-        # One can use x-kubernetes-preserve-unknown-fields: true
-        # at the root of the schema (and inside any properties, additionalProperties)
-        # to get the traditional CRD behaviour that nothing is pruned, despite
-        # setting spec.preserveUnknownProperties: false.
-        #
-        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-        # See issue: https://github.com/knative/serving/issues/912
         x-kubernetes-preserve-unknown-fields: true
-    # Opt into the status subresource so metadata.generation
-    # starts to increment
     subresources:
       status: {}
   names:
@@ -383,6 +373,9 @@ spec:
     - galasa-ecosystems
   scope: Namespaced
 ---
+#
+# Copyright contributors to the Galasa project 
+#
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -404,16 +397,7 @@ spec:
     schema:
       openAPIV3Schema:
         type: object
-        # One can use x-kubernetes-preserve-unknown-fields: true
-        # at the root of the schema (and inside any properties, additionalProperties)
-        # to get the traditional CRD behaviour that nothing is pruned, despite
-        # setting spec.preserveUnknownProperties: false.
-        #
-        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-        # See issue: https://github.com/knative/serving/issues/912
         x-kubernetes-preserve-unknown-fields: true
-    # Opt into the status subresource so metadata.generation
-    # starts to increment
     subresources:
       status: {}
   names:
@@ -424,6 +408,9 @@ spec:
     - galasa-ecosystems
   scope: Namespaced
 ---
+#
+# Copyright contributors to the Galasa project 
+#
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -442,19 +429,16 @@ spec:
       - name: Created
         type: string
         jsonPath: ".metadata.creationTimestamp"
+      - name: Ready
+        type: string
+        jsonPath: ".status.ready"
+      - name: BootstrapURL
+        type: string
+        jsonPath: ".status.bootstrapURL"
     schema:
       openAPIV3Schema:
         type: object
-        # One can use x-kubernetes-preserve-unknown-fields: true
-        # at the root of the schema (and inside any properties, additionalProperties)
-        # to get the traditional CRD behaviour that nothing is pruned, despite
-        # setting spec.preserveUnknownProperties: false.
-        #
-        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-        # See issue: https://github.com/knative/serving/issues/912
         x-kubernetes-preserve-unknown-fields: true
-    # Opt into the status subresource so metadata.generation
-    # starts to increment
     subresources:
       status: {}
   names:
@@ -465,10 +449,14 @@ spec:
     - galasa-ecosystems
   scope: Namespaced
 ---
+#
+# Copyright contributors to the Galasa project 
+#
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: galasa-ecosystem-operator
+  namespace: galasa
 spec:
   replicas: 1
   selector:
@@ -493,10 +481,10 @@ spec:
         beta.kubernetes.io/arch: amd64
       containers:
       - name: galasa-ecosystem-operator
-        image: https://nexus.cics-ts.hur.hdclab.intranet.ibm.com:8080/jdavies47/operator-430e0bffa1c2c330313df6d413407d89:latest
+        image: docker.galasa.dev/galasa-kubernetes-operator-amd64:0.1.0
         args:
           - "-namespace"
-          - "XXXXXXXX"
+          - "galasa"
         env:
         - name: METRICS_DOMAIN
           value: galasa.dev/ecosystem
@@ -515,6 +503,5 @@ spec:
           capabilities:
             drop:
             - all
-          # User 65532 is the distroless nonroot user ID
           runAsUser: 65532
           runAsGroup: 65532

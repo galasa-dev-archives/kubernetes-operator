@@ -11,7 +11,7 @@ const (
 )
 
 var (
-	GALASAVERSION   string = "0.18.0"
+	GALASAVERSION   string = "latest"
 	APIIMAGE        string = "docker.galasa.dev/galasadev/galasa-boot-embedded-amd64:" + GALASAVERSION
 	RESMONIMAGE     string = "docker.galasa.dev/galasadev/galasa-boot-embedded-amd64:" + GALASAVERSION
 	METRICSIMAGE    string = "docker.galasa.dev/galasadev/galasa-boot-embedded-amd64:" + GALASAVERSION

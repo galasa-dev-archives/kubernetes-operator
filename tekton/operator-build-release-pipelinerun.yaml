@@ -1,0 +1,39 @@
+#
+# Copyright contributors to the Galasa project 
+#
+kind: PipelineRun
+apiVersion: tekton.dev/v1beta1
+metadata:
+  generateName: kubernetes-operator-release-pipeline-
+  namespace: galasa-tekton
+spec:
+  params:
+  - name: distBranch
+    value: main
+  - name: refspec
+    value: +refs/heads/main:refs/heads/main
+  - name: imageName
+    value: docker.galasa.dev/galasa-kubernetes-operator-amd64:0.1.0
+  - name: noPush
+    value: ""
+  pipelineRef:
+    name: operator-build-pipeline
+  serviceAccountName: build-bot
+  podTemplate:
+    nodeSelector:
+      beta.kubernetes.io/arch: amd64
+      platform: hdc
+    hostAliases:
+      - ip: "10.58.0.20"
+        hostnames:
+        - "nexus.cics-ts.hur.hdclab.intranet.ibm.com"
+  workspaces:
+  - name: git-workspace
+    volumeClaimTemplate:
+      spec:
+        storageClassName: rbd
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi

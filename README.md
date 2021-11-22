@@ -3,7 +3,7 @@ This is a alpha level release of the kubernetes operator, moved and re-architect
 
 ## Install
 
-TODO
+
 
 ## Development
 

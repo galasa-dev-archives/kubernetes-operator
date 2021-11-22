@@ -21,6 +21,9 @@ spec:
   - name: imageName
     type: string
     default: noPushImage:latest
+  - name: isRelease
+    type: string
+    default: "false"
   tasks:
   - name: clone-galasa-kubernetes-operator
     taskRef: 
@@ -39,7 +42,7 @@ spec:
     workspaces:
      - name: output
        workspace: git-workspace
-  - name: operator-build
+  - name: operator-build-tagged-version
     taskRef:
       name: operator-build-task
     runAfter:
@@ -49,7 +52,7 @@ spec:
       value: $(params.distBranch)
     - name: noPush
       value: $(params.noPush)
-    - name: imageNameame
+    - name: imageName
       value: $(params.imageName)
     workspaces:
      - name: git-workspace

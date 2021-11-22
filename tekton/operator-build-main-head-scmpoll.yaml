@@ -1,22 +1,24 @@
 apiVersion: tekton.dev/v1alpha1
 kind: SCMPoll
 metadata:
-  name: galasa-kubernetes-operator-pr-poll
+  name: galasa-kubernetes-operator-main-head-poll
   namespace: galasa-tekton
 spec:
   metadata:
-    name: galasa-kubernetes-operator-pr-poll
-  description: Polls for PRs to the main branch
+    name: galasa-kubernetes-operator-main-head-poll
+  description: Polls for kubernetes operator changes to the main branch
   pollFrequency: 60
   tidy: true
   concurrentPipelines: false
   repositories:
     - name: galasa-kubernetes-operator
-      type: github-pr
+      type: github-head
       serviceAccountName: poll-sa
       params:
       - name: url
         value: https://api.github.com/repos/galasa-dev/galasa-kubernetes-operator
+      - name: branch
+        value: main
       - name: rebuildString
         value: "rebuild"
   pipelineRunSpec:
@@ -24,9 +26,11 @@ spec:
     - name: distBranch
       value: main
     - name: refspec
-      value: $(galasa-kubernetes-operator.refSpec)
+      value: +refs/heads/main:refs/heads/main
+    - name: imageName
+      value: nexus.cics-ts.hur.hdclab.intranet.ibm.com:8080/galasadev/galasa-kubernetes-operator:main
     - name: noPush
-      value: "--no-push"
+      value: ""
     pipelineRef:
       name: operator-build-pipeline
     serviceAccountName: build-bot
