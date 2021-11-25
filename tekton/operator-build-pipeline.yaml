@@ -20,7 +20,7 @@ spec:
     default: "--no-push"
   - name: imageName
     type: string
-    default: noPushImage:latest
+    default: nopushimage:latest
   - name: isRelease
     type: string
     default: "false"
