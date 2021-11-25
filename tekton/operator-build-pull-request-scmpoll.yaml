@@ -7,7 +7,7 @@ spec:
   metadata:
     name: galasa-kubernetes-operator-pr-poll
   description: Polls for PRs to the main branch
-  pollFrequency: 60
+  pollFrequency: 30
   tidy: true
   concurrentPipelines: false
   repositories:
