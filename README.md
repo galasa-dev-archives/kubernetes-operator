@@ -1,5 +1,5 @@
 # Galasa Kubernetes operator
-This is a alpha level release of the kubernetes operator, moved and re-architected from galasa-dev/extensions repository.
+This is a alpha level release of the kubernetes operator, moved and re-architected from galasa-dev/extensions repository. 
 
 If any problems are found please open issues at https://github.com/galasa-dev/projectmanagement/issues 
 
