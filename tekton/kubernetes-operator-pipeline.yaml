@@ -4,7 +4,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: operator-build-pipeline
+  name: kubernetes-operator-pipeline
   namespace: galasa-tekton
 spec:
   workspaces:
@@ -44,7 +44,7 @@ spec:
        workspace: git-workspace
   - name: operator-build-tagged-version
     taskRef:
-      name: operator-build-task
+      name: kubernetes-operator-task
     runAfter:
     - clone-galasa-kubernetes-operator
     params:

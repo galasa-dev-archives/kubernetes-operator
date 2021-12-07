@@ -4,17 +4,17 @@
 apiVersion: tekton.dev/v1alpha1
 kind: SCMPoll
 metadata:
-  name: galasa-kubernetes-operator-pr-poll
+  name: kubernetes-operator-pr-poll
   namespace: galasa-tekton
 spec:
   metadata:
-    name: galasa-kubernetes-operator-pr-poll
+    name: kubernetes-operator-pr-poll
   description: Polls for PRs to the main branch
   pollFrequency: 30
   tidy: true
   concurrentPipelines: false
   repositories:
-    - name: galasa-kubernetes-operator
+    - name: kubernetes-operator
       type: github-pr
       serviceAccountName: poll-sa
       params:
@@ -27,25 +27,20 @@ spec:
     - name: distBranch
       value: main
     - name: refspec
-      value: $(galasa-kubernetes-operator.refSpec)
+      value: $(kubernetes-operator.refSpec)
     - name: noPush
       value: "--no-push"
     pipelineRef:
-      name: operator-build-pipeline
+      name: kubernetes-operator-pipeline
     serviceAccountName: build-bot
     podTemplate:
       nodeSelector:
-        beta.kubernetes.io/arch: amd64
+        kubernetes.io/arch: amd64
         platform: hdc
-      hostAliases:
-      - ip: "10.58.0.20"
-        hostnames:
-        - "nexus.cics-ts.hur.hdclab.intranet.ibm.com"
     workspaces:
     - name: git-workspace
       volumeClaimTemplate:
         spec:
-          storageClassName: rbd
           accessModes:
             - ReadWriteOnce
           resources:
