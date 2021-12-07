@@ -9,7 +9,7 @@ If any problems are found please open issues at https://github.com/galasa-dev/pr
 For a basic install that creates a namespace called `galasa` and installs the operator and relevant ecosystem CRD's use:
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/galasa-dev/galasa-kubernetes-operator/main/releases/0.1.0/release.yaml
+kubectl apply -f https://raw.githubusercontent.com/galasa-dev/galasa-kubernetes-operator/main/releases/0.18.1/release.yaml
 ```
 This limits all work to the galasa namespace
 

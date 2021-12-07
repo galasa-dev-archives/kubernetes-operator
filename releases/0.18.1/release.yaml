@@ -481,7 +481,7 @@ spec:
         beta.kubernetes.io/arch: amd64
       containers:
       - name: galasa-ecosystem-operator
-        image: docker.galasa.dev/galasa-kubernetes-operator-amd64:0.1.0
+        image: docker.galasa.dev/galasa-kubernetes-operator-amd64:0.18.1
         args:
           - "-namespace"
           - "galasa"
