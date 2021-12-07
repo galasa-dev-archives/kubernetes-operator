@@ -4,7 +4,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: operator-build-task
+  name: kubernetes-operator-task
   namespace: galasa-tekton
 spec:
   workspaces:
@@ -18,14 +18,14 @@ spec:
     type: string
   - name: dockerBuildRepo
     type: string
-    default: nexus.cics-ts.hur.hdclab.intranet.ibm.com:8080
+    default: harbor-cicsk8s.hursley.ibm.com
   - name: noPush
     type: string
     default: ""
   steps:
   - name: docker-build
     workingDir: /workspace/git/galasa-kubernetes-operator/
-    image: $(params.dockerBuildRepo)/library/kaniko-executor:latest
+    image: $(params.dockerBuildRepo)/common/kaniko-project/executor:latest
     env:
     - name: DOCKER_CONFIG
       value: /tekton/home/.docker

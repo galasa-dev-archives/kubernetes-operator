@@ -4,11 +4,11 @@
 apiVersion: tekton.dev/v1alpha1
 kind: SCMPoll
 metadata:
-  name: galasa-kubernetes-operator-main-head-poll
+  name: kubernetes-operator-main-head-poll
   namespace: galasa-tekton
 spec:
   metadata:
-    name: galasa-kubernetes-operator-main-head-poll
+    name: kubernetes-operator-main-head-poll
   description: Polls for kubernetes operator changes to the main branch
   pollFrequency: 60
   tidy: true
@@ -31,25 +31,20 @@ spec:
     - name: refspec
       value: +refs/heads/main:refs/heads/main
     - name: imageName
-      value: nexus.cics-ts.hur.hdclab.intranet.ibm.com:8080/galasadev/galasa-kubernetes-operator:main
+      value: harbor-cicsk8s.hursley.ibm.com/galasadev/galasa-kubernetes-operator:main
     - name: noPush
       value: ""
     pipelineRef:
-      name: operator-build-pipeline
+      name: kubernetes-operator-pipeline
     serviceAccountName: build-bot
     podTemplate:
       nodeSelector:
-        beta.kubernetes.io/arch: amd64
+        kubernetes.io/arch: amd64
         platform: hdc
-      hostAliases:
-      - ip: "10.58.0.20"
-        hostnames:
-        - "nexus.cics-ts.hur.hdclab.intranet.ibm.com"
     workspaces:
     - name: git-workspace
       volumeClaimTemplate:
         spec:
-          storageClassName: rbd
           accessModes:
             - ReadWriteOnce
           resources:
