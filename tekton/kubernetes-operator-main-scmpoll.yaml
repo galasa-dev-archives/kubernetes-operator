@@ -35,12 +35,11 @@ spec:
     - name: noPush
       value: ""
     pipelineRef:
-      name: kubernetes-operator-pipeline
+      name: kubernetes-operator-build
     serviceAccountName: build-bot
     podTemplate:
       nodeSelector:
         kubernetes.io/arch: amd64
-        platform: hdc
     workspaces:
     - name: git-workspace
       volumeClaimTemplate:
@@ -50,3 +49,4 @@ spec:
           resources:
             requests:
               storage: 1Gi
+          storageClassName: longhorn-temp

@@ -1,15 +1,19 @@
 #
 # Copyright contributors to the Galasa project 
+# 
+# This pipelinerun comprises of two tasks, a git clone and a docker build
 #
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: kubernetes-operator-pipeline
+  name: kubernetes-operator-build
   namespace: galasa-tekton
 spec:
+# This pipeline requires a workspace, (tells kuberenetes to provision a volume)
   workspaces:
   - name: git-workspace
     optional: false
+# The pipeline can have input parameters which will be passed at build time
   params:
   - name: distBranch
     type: string
@@ -25,9 +29,11 @@ spec:
     type: string
     default: "false"
   tasks:
+  # Another common task used to clone git repositories
   - name: clone-galasa-kubernetes-operator
     taskRef: 
       name: git-clone
+# Parameters can be flowed through when submitted. Refspec and Revsion here reference the input parmeters for this pipeline
     params:
     - name: url
       value: https://github.com/galasa-dev/galasa-kubernetes-operator
@@ -39,17 +45,18 @@ spec:
       value: "99999999"
     - name: subdirectory
       value: galasa-kubernetes-operator
+# This task uses the workspace, cloning into it ready for next tasks
     workspaces:
      - name: output
        workspace: git-workspace
+# This is the build task for creating and publishing the operator docker image
   - name: operator-build-tagged-version
     taskRef:
-      name: kubernetes-operator-task
+      name: kubernetes-operator-build-task
+# By default tasks run in parallel, unless like this told to run after a step
     runAfter:
     - clone-galasa-kubernetes-operator
     params:
-    - name: distBranch
-      value: $(params.distBranch)
     - name: noPush
       value: $(params.noPush)
     - name: imageName
