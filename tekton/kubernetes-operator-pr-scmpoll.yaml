@@ -1,6 +1,8 @@
 #
 # Copyright contributors to the Galasa project 
 #
+# This is a trigger that polls the galasa-kubernetes-operator repository looking for PR's
+#
 apiVersion: tekton.dev/v1alpha1
 kind: SCMPoll
 metadata:
@@ -9,19 +11,30 @@ metadata:
 spec:
   metadata:
     name: kubernetes-operator-pr-poll
-  description: Polls for PRs to the main branch
-  pollFrequency: 30
+  description: Polls for PRs
+# How regular to poll the repo
+  pollFrequency: 60
+# The tidy pollicy for cleaning up pipeline runs. True deletes once PR is closed
   tidy: true
+# Do we allow pipelineruns in the same PR to be run concurrently
   concurrentPipelines: false
+# The list of repositories we are watching
   repositories:
     - name: kubernetes-operator
       type: github-pr
+# Service accounts for passing any secrets
       serviceAccountName: poll-sa
+# Poll specific parameters
       params:
       - name: url
         value: https://api.github.com/repos/galasa-dev/galasa-kubernetes-operator
+# Any git comments with this string will rebuild the same commit
       - name: rebuildString
         value: "rebuild"
+#  For PRs not submitted by known contributors, must be approved before any commits are built
+      - name: approvalString
+        value: "approved"
+# This is a standard pipelinerun spec, which has access to specific parameters like refspec or commit ID from the poll
   pipelineRunSpec:
     params:
     - name: distBranch
@@ -31,12 +44,11 @@ spec:
     - name: noPush
       value: "--no-push"
     pipelineRef:
-      name: kubernetes-operator-pipeline
+      name: kubernetes-operator-build
     serviceAccountName: build-bot
     podTemplate:
       nodeSelector:
         kubernetes.io/arch: amd64
-        platform: hdc
     workspaces:
     - name: git-workspace
       volumeClaimTemplate:
@@ -46,3 +58,4 @@ spec:
           resources:
             requests:
               storage: 1Gi
+          storageClassName: longhorn-temp

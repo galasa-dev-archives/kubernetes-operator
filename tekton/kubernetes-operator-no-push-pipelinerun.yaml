@@ -1,0 +1,39 @@
+#
+# Copyright contributors to the Galasa project 
+#
+# This is a pipeline run that submits a clone and build of the kubernetes operator
+#
+kind: PipelineRun
+apiVersion: tekton.dev/v1beta1
+metadata:
+  generateName: kubernetes-operator-test-pipeline-
+  namespace: galasa-tekton
+spec:
+# Build time parameters to submit the pipeline with
+    params:
+    - name: distBranch
+      value: main
+    - name: refspec
+      value: +refs/heads/main:refs/heads/main
+    - name: noPush
+      value: "--no-push"
+# References the pipeline we want to build
+    pipelineRef:
+      name: kubernetes-operator-build
+# Any service account we want to use, which can contain required secrets
+    serviceAccountName: build-bot
+# We can pass pod templates so the build runs where we want it too
+    podTemplate:
+      nodeSelector:
+        kubernetes.io/arch: amd64
+# Produce a workspace for the build to run in. Required by the pipelines
+    workspaces:
+    - name: git-workspace
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+          storageClassName: longhorn-temp

@@ -1,31 +1,40 @@
 #
 # Copyright contributors to the Galasa project 
 #
+# This is a task that builds and publishes (if set) a docker image containing the operator image
+#
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: kubernetes-operator-task
+  name: kubernetes-operator-build-task
   namespace: galasa-tekton
 spec:
+# For this task we are using a workspace, which infers this task is part of a multistage pipeline
+# and that all the required resourcers nessesary for this task will be in the workspace/adding to 
+# a workspace for a future step
   workspaces:
   - name: git-workspace
     optional: false
     mountpath: /workspace/git
+# Any user of this task can pass these parameters.
   params:
+# image name (including image tag)
   - name: imageName
     type: string
-  - name: distBranch
-    type: string
+# Which image repository are we using to pull build images from
   - name: dockerBuildRepo
     type: string
     default: harbor-cicsk8s.hursley.ibm.com
+# Do we want to build and publish, or just build. Defaults to publish
   - name: noPush
     type: string
     default: ""
+# Single step task. Uses a image called kaniko to build docker images inside a kuberentes pod  
   steps:
   - name: docker-build
     workingDir: /workspace/git/galasa-kubernetes-operator/
-    image: $(params.dockerBuildRepo)/common/kaniko-project/executor:latest
+    image: gcr.io/kaniko-project/executor
+    # image: $(params.dockerBuildRepo)/common/kaniko-project/executor:latest
     env:
     - name: DOCKER_CONFIG
       value: /tekton/home/.docker
