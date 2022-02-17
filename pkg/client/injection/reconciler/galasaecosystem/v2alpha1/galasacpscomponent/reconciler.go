@@ -10,9 +10,9 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 
-	v2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
-	versioned "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned"
-	galasaecosystemv2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/listers/galasaecosystem/v2alpha1"
+	v2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	versioned "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned"
+	galasaecosystemv2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/client/listers/galasaecosystem/v2alpha1"
 	zap "go.uber.org/zap"
 	v1 "k8s.io/api/core/v1"
 	equality "k8s.io/apimachinery/pkg/api/equality"

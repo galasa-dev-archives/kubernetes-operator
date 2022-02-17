@@ -6,8 +6,8 @@
 package galasaecosystem
 
 import (
-	v2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/informers/externalversions/galasaecosystem/v2alpha1"
-	internalinterfaces "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/informers/externalversions/internalinterfaces"
+	v2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/client/informers/externalversions/galasaecosystem/v2alpha1"
+	internalinterfaces "github.com/galasa-dev/kubernetes-operator/pkg/client/informers/externalversions/internalinterfaces"
 )
 
 // Interface provides access to each of this group's versions.

@@ -3,31 +3,35 @@
  */
 package v2alpha1
 
-func DefaultCps() ComponentSpec {
+func DefaultCps(c *GalasaEcosystemSpec) ComponentSpec {
 	return ComponentSpec{
 		Image:            CPSIMAGE,
 		Replicas:         &SINGLEREPLICA,
-		ImagePullPolicy:  IMAGEPULLPOLICY,
+		ImagePullPolicy:  c.ImagePullPolicy,
 		Storage:          CPSSTORAGE,
-		StorageClassName: STORAGECLASSNAME,
+		StorageClassName: c.StorageClassName,
+		NodeSelector:     c.NodeSelector,
 	}
 }
 
-func SetCpsDefaults(cps ComponentSpec) ComponentSpec {
+func SetCpsDefaults(cps ComponentSpec, c *GalasaEcosystemSpec) ComponentSpec {
 	if cps.Image == "" {
 		cps.Image = CPSIMAGE
 	}
 	if cps.ImagePullPolicy == "" {
-		cps.ImagePullPolicy = IMAGEPULLPOLICY
+		cps.ImagePullPolicy = c.ImagePullPolicy
 	}
 	if cps.Storage == "" {
 		cps.Storage = CPSSTORAGE
 	}
 	if cps.StorageClassName == "" {
-		cps.StorageClassName = STORAGECLASSNAME
+		cps.StorageClassName = c.StorageClassName
 	}
 	if cps.Replicas == nil {
 		cps.Replicas = &SINGLEREPLICA
+	}
+	if cps.NodeSelector == nil {
+		cps.NodeSelector = c.NodeSelector
 	}
 
 	return cps

@@ -11,9 +11,9 @@ import (
 	errors "errors"
 	fmt "fmt"
 
-	v2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
-	versioned "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned"
-	typedgalasav2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned/typed/galasaecosystem/v2alpha1"
+	v2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	versioned "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned"
+	typedgalasav2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned/typed/galasaecosystem/v2alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	unstructured "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	runtime "k8s.io/apimachinery/pkg/runtime"
@@ -53,10 +53,10 @@ func Get(ctx context.Context) versioned.Interface {
 	if untyped == nil {
 		if injection.GetConfig(ctx) == nil {
 			logging.FromContext(ctx).Panic(
-				"Unable to fetch github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned.Interface from context. This context is not the application context (which is typically given to constructors via sharedmain).")
+				"Unable to fetch github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned.Interface from context. This context is not the application context (which is typically given to constructors via sharedmain).")
 		} else {
 			logging.FromContext(ctx).Panic(
-				"Unable to fetch github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned.Interface from context.")
+				"Unable to fetch github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned.Interface from context.")
 		}
 	}
 	return untyped.(versioned.Interface)

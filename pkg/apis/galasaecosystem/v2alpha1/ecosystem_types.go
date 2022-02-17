@@ -31,6 +31,18 @@ type GalasaEcosystemSpec struct {
 	// +optional
 	BusyboxImage   string                   `json:"busyboxImage"`
 	ComponentsSpec map[string]ComponentSpec `json:"componentsSpec"`
+	// +optional
+	Simbank bool `json:"simbank"`
+	// +optional
+	SimbankVersion string `json:"simbankVersion"`
+
+	// Global Spec, will be overidden by component spec
+	// +optional
+	ImagePullPolicy string `json:"imagePullPolicy"`
+	// +optional
+	StorageClassName string `json:"storageClassName"`
+	// +optional
+	NodeSelector map[string]string `json:"nodeSelector"`
 }
 
 type ComponentSpec struct {
@@ -73,4 +85,8 @@ type GalasaEcosystemList struct {
 	// +optional
 	metav1.ListMeta `json:"metadata,omitempty"`
 	Items           []GalasaEcosystem `json:"items"`
+}
+
+func (c *GalasaEcosystem) GetStorageClassName() string {
+	return c.Spec.StorageClassName
 }

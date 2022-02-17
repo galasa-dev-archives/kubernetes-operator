@@ -7,8 +7,8 @@ import (
 	"context"
 	"reflect"
 
-	"github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
-	galasaecosystem "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned"
+	"github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	galasaecosystem "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
@@ -32,6 +32,7 @@ type Api struct {
 }
 
 func New(apiCrd *v2alpha1.GalasaApiComponent, k galasaecosystem.Interface) *Api {
+	t := true
 	return &Api{
 		Ecosystemclient:  k,
 		Namespace:        apiCrd.Namespace,
@@ -44,7 +45,16 @@ func New(apiCrd *v2alpha1.GalasaApiComponent, k galasaecosystem.Interface) *Api 
 		Storage:          apiCrd.Spec.Storage,
 		StorageClassName: apiCrd.Spec.StorageClassName,
 		NodeSelector:     apiCrd.Spec.NodeSelector,
-		Owner:            apiCrd.OwnerReferences,
+		Owner: []v1.OwnerReference{
+			{
+				APIVersion:         "galasa.dev/v2alpha1",
+				Kind:               "GalasaApiComponent",
+				Name:               apiCrd.Name,
+				UID:                apiCrd.GetUID(),
+				Controller:         &t,
+				BlockOwnerDeletion: &t,
+			},
+		},
 
 		Status: v2alpha1.ComponentStatus{
 			Ready: apiCrd.Status.Ready,

@@ -7,8 +7,8 @@ import (
 	"context"
 	"reflect"
 
-	"github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
-	galasaecosystem "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned"
+	"github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	galasaecosystem "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
@@ -29,6 +29,7 @@ type Cps struct {
 }
 
 func New(cpsCrd *v2alpha1.GalasaCpsComponent, k galasaecosystem.Interface) *Cps {
+	t := true
 	return &Cps{
 		Ecosystemclient:  k,
 		Namespace:        cpsCrd.Namespace,
@@ -39,7 +40,16 @@ func New(cpsCrd *v2alpha1.GalasaCpsComponent, k galasaecosystem.Interface) *Cps 
 		Storage:          cpsCrd.Spec.Storage,
 		StorageClassName: cpsCrd.Spec.StorageClassName,
 		NodeSelector:     cpsCrd.Spec.NodeSelector,
-		Owner:            cpsCrd.OwnerReferences,
+		Owner: []v1.OwnerReference{
+			{
+				APIVersion:         "galasa.dev/v2alpha1",
+				Kind:               "GalasaCpsComponent",
+				Name:               cpsCrd.Name,
+				UID:                cpsCrd.GetUID(),
+				Controller:         &t,
+				BlockOwnerDeletion: &t,
+			},
+		},
 
 		Status: v2alpha1.ComponentStatus{
 			Ready: cpsCrd.Status.Ready,

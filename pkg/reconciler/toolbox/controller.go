@@ -6,10 +6,11 @@ package toolbox
 import (
 	"context"
 
-	galasatoolboxreconciler "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/reconciler/galasaecosystem/v2alpha1/galasatoolboxcomponent"
+	galasatoolboxreconciler "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/reconciler/galasaecosystem/v2alpha1/galasatoolboxcomponent"
 
-	galasaecosystemclient "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/client"
-	galasaecosystemformer "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/informers/galasaecosystem/v2alpha1/galasaecosystem"
+	galasaecosystemclient "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/client"
+	galasaecosystemformer "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/informers/galasaecosystem/v2alpha1/galasaecosystem"
+	galasatoolboxinformer "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/informers/galasaecosystem/v2alpha1/galasatoolboxcomponent"
 
 	kubeclient "knative.dev/pkg/client/injection/kube/client"
 	"knative.dev/pkg/configmap"
@@ -25,11 +26,13 @@ func NewController(namespace string) func(ctx context.Context, cmw configmap.Wat
 		kubeclientset := kubeclient.Get(ctx)
 		clientset := galasaecosystemclient.Get(ctx)
 		informer := galasaecosystemformer.Get(ctx)
+		toolboxinformer := galasatoolboxinformer.Get(ctx)
 
 		c := &Reconciler{
 			KubeClientSet:            kubeclientset,
 			GalasaEcosystemClientSet: clientset,
 			GalasaEcosystemLister:    informer.Lister(),
+			GalasaToolboxLister:      toolboxinformer.Lister(),
 		}
 
 		impl := galasatoolboxreconciler.NewImpl(ctx, c, func(impl *controller.Impl) controller.Options {
@@ -38,7 +41,7 @@ func NewController(namespace string) func(ctx context.Context, cmw configmap.Wat
 			}
 		})
 
-		informer.Informer().AddEventHandler(controller.HandleAll(impl.Enqueue))
+		toolboxinformer.Informer().AddEventHandler(controller.HandleAll(impl.Enqueue))
 
 		return impl
 	}

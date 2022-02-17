@@ -7,8 +7,8 @@ import (
 	"context"
 	"reflect"
 
-	"github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
-	galasaecosystem "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned"
+	"github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	galasaecosystem "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
@@ -29,6 +29,7 @@ type Ras struct {
 }
 
 func New(rasCrd *v2alpha1.GalasaRasComponent, k galasaecosystem.Interface) *Ras {
+	t := true
 	return &Ras{
 		Ecosystemclient:  k,
 		Namespace:        rasCrd.Namespace,
@@ -39,7 +40,16 @@ func New(rasCrd *v2alpha1.GalasaRasComponent, k galasaecosystem.Interface) *Ras 
 		Storage:          rasCrd.Spec.Storage,
 		StorageClassName: rasCrd.Spec.StorageClassName,
 		NodeSelector:     rasCrd.Spec.NodeSelector,
-		Owner:            rasCrd.OwnerReferences,
+		Owner: []v1.OwnerReference{
+			{
+				APIVersion:         "galasa.dev/v2alpha1",
+				Kind:               "GalasaRasComponent",
+				Name:               rasCrd.Name,
+				UID:                rasCrd.GetUID(),
+				Controller:         &t,
+				BlockOwnerDeletion: &t,
+			},
+		},
 
 		Status: v2alpha1.ComponentStatus{
 			Ready: rasCrd.Status.Ready,

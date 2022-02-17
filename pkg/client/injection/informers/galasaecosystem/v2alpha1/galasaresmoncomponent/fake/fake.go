@@ -8,8 +8,8 @@ package fake
 import (
 	context "context"
 
-	fake "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/informers/factory/fake"
-	galasaresmoncomponent "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/informers/galasaecosystem/v2alpha1/galasaresmoncomponent"
+	fake "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/informers/factory/fake"
+	galasaresmoncomponent "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/informers/galasaecosystem/v2alpha1/galasaresmoncomponent"
 	controller "knative.dev/pkg/controller"
 	injection "knative.dev/pkg/injection"
 )

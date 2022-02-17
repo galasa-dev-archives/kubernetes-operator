@@ -9,8 +9,8 @@ import (
 	"context"
 	"time"
 
-	v2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
-	scheme "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned/scheme"
+	v2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	scheme "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"

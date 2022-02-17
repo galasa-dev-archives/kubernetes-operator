@@ -8,7 +8,7 @@ package versioned
 import (
 	"fmt"
 
-	galasav2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned/typed/galasaecosystem/v2alpha1"
+	galasav2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned/typed/galasaecosystem/v2alpha1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"

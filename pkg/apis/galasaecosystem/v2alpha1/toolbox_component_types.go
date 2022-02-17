@@ -24,15 +24,19 @@ type GalasaToolboxComponent struct {
 
 type ToolboxSpec struct {
 	// +optional
-	Simbank ComponentSpec `json:"simbank"`
+	Simbank bool `json:"simbank"`
 	// +optional
-	Grafana ComponentSpec `json:"grafana"`
-	// +optional
-	Prometheus ComponentSpec `json:"prometheus"`
-	// +optional
-	Jenkins ComponentSpec `json:"Jenkins"`
-	// +optional
-	Nexus ComponentSpec `json:"Nexus"`
+	SimbankSpec ComponentSpec `json:"simbankSpec"`
+
+	//TODO
+	// // +optional
+	// Grafana ComponentSpec `json:"grafana"`
+	// // +optional
+	// Prometheus ComponentSpec `json:"prometheus"`
+	// // +optional
+	// Jenkins ComponentSpec `json:"Jenkins"`
+	// // +optional
+	// Nexus ComponentSpec `json:"Nexus"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

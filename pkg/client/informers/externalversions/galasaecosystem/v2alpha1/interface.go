@@ -6,7 +6,7 @@
 package v2alpha1
 
 import (
-	internalinterfaces "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/informers/externalversions/internalinterfaces"
+	internalinterfaces "github.com/galasa-dev/kubernetes-operator/pkg/client/informers/externalversions/internalinterfaces"
 )
 
 // Interface provides access to all the informers in this group version.

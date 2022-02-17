@@ -8,9 +8,9 @@ package fakeFilteredFactory
 import (
 	context "context"
 
-	externalversions "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/informers/externalversions"
-	fake "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/client/fake"
-	filtered "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/informers/factory/filtered"
+	externalversions "github.com/galasa-dev/kubernetes-operator/pkg/client/informers/externalversions"
+	fake "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/client/fake"
+	filtered "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/informers/factory/filtered"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	controller "knative.dev/pkg/controller"
 	injection "knative.dev/pkg/injection"

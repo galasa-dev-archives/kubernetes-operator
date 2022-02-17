@@ -10,9 +10,9 @@ import (
 	sync "sync"
 	time "time"
 
-	versioned "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned"
-	galasaecosystem "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/informers/externalversions/galasaecosystem"
-	internalinterfaces "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/informers/externalversions/internalinterfaces"
+	versioned "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned"
+	galasaecosystem "github.com/galasa-dev/kubernetes-operator/pkg/client/informers/externalversions/galasaecosystem"
+	internalinterfaces "github.com/galasa-dev/kubernetes-operator/pkg/client/informers/externalversions/internalinterfaces"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"

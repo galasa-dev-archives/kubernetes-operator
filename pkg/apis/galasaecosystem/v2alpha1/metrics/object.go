@@ -7,8 +7,8 @@ import (
 	"context"
 	"reflect"
 
-	"github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
-	galasaecosystem "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned"
+	"github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	galasaecosystem "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
@@ -28,6 +28,7 @@ type Metrics struct {
 }
 
 func New(metricsCrd *v2alpha1.GalasaMetricsComponent, k galasaecosystem.Interface) *Metrics {
+	t := true
 	return &Metrics{
 		Ecosystemclient: k,
 		Namespace:       metricsCrd.Namespace,
@@ -36,8 +37,17 @@ func New(metricsCrd *v2alpha1.GalasaMetricsComponent, k galasaecosystem.Interfac
 		Replicas:        metricsCrd.Spec.Replicas,
 		ImagePullPolicy: metricsCrd.Spec.ImagePullPolicy,
 		NodeSelector:    metricsCrd.Spec.NodeSelector,
-		Owner:           metricsCrd.OwnerReferences,
-		Bootstrap:       metricsCrd.Spec.ComponentParms["bootstrap"],
+		Owner: []v1.OwnerReference{
+			{
+				APIVersion:         "galasa.dev/v2alpha1",
+				Kind:               "GalasaMetricsComponent",
+				Name:               metricsCrd.Name,
+				UID:                metricsCrd.GetUID(),
+				Controller:         &t,
+				BlockOwnerDeletion: &t,
+			},
+		},
+		Bootstrap: metricsCrd.Spec.ComponentParms["bootstrap"],
 
 		Status: v2alpha1.ComponentStatus{
 			Ready: metricsCrd.Status.Ready,

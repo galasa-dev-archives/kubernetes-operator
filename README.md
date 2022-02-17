@@ -8,7 +8,7 @@ If any problems are found please open issues at https://github.com/galasa-dev/pr
 For a basic install that creates a namespace called `galasa` and installs the operator and relevant ecosystem CRD's use:
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/galasa-dev/galasa-kubernetes-operator/main/releases/0.18.1/release.yaml
+kubectl apply -f https://raw.githubusercontent.com/galasa-dev/kubernetes-operator/main/releases/0.18.1/release.yaml
 ```
 This limits all work to the galasa namespace
 
@@ -30,10 +30,10 @@ Galasa-Ecosystem   2021-11-22T10:12:21Z   true    http://example.com:30000/boots
 #### Code Generation
 ```
 # Deepcopy and Client gen
-hack/generate-groups.sh all github.com/galasa-dev/galasa-kubernetes-operator/pkg/client github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis "galasaecosystem:v2alpha1" -h hack/boilerplate/boilerplate.go.txt
+hack/generate-groups.sh all github.com/galasa-dev/kubernetes-operator/pkg/client github.com/dev/kubernetes-operator/pkg/apis "galasaecosystem:v2alpha1" -h hack/boilerplate/boilerplate.go.txt
 
 # Knative Injection clients
-hack/generate-knative.sh injection github.com/galasa-dev/galasa-kubernetes-operator/pkg/client github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis "galasaecosystem:v2alpha1" -h hack/boilerplate/boilerplate.go.txt
+hack/generate-knative.sh injection github.com/galasa-dev/kubernetes-operator/pkg/client github.com/galasa-dev/kubernetes-operator/pkg/apis "galasaecosystem:v2alpha1" -h hack/boilerplate/boilerplate.go.txt
 ```
 
 #### Deploying with Ko:

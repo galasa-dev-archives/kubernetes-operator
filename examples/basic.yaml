@@ -1,0 +1,11 @@
+apiVersion: galasa.dev/v2alpha1
+kind: GalasaEcosystem
+metadata:
+  name: <NAMEOFECOSYSTEM>
+  namespace: <NAMESPACE>
+spec:
+  hostname: "<HOSTNAME>"
+  galasaVersion: "0.20.0"
+  storageClassName: <STORAGECLASSNAME>
+  simbank: true
+  simplatformVersion: 0.15.0

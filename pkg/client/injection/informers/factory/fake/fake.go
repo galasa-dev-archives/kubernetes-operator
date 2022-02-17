@@ -8,9 +8,9 @@ package fake
 import (
 	context "context"
 
-	externalversions "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/informers/externalversions"
-	fake "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/client/fake"
-	factory "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/informers/factory"
+	externalversions "github.com/galasa-dev/kubernetes-operator/pkg/client/informers/externalversions"
+	fake "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/client/fake"
+	factory "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/informers/factory"
 	controller "knative.dev/pkg/controller"
 	injection "knative.dev/pkg/injection"
 )
