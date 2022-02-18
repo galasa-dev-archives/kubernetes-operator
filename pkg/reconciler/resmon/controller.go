@@ -6,10 +6,10 @@ package resmon
 import (
 	"context"
 
-	galasaresmonreconciler "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/reconciler/galasaecosystem/v2alpha1/galasaresmoncomponent"
+	galasaresmonreconciler "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/reconciler/galasaecosystem/v2alpha1/galasaresmoncomponent"
 
-	galasaecosystemclient "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/client"
-	galasaresmoninformer "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/informers/galasaecosystem/v2alpha1/galasaresmoncomponent"
+	galasaecosystemclient "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/client"
+	galasaresmoninformer "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/informers/galasaecosystem/v2alpha1/galasaresmoncomponent"
 
 	kubeclient "knative.dev/pkg/client/injection/kube/client"
 	"knative.dev/pkg/configmap"

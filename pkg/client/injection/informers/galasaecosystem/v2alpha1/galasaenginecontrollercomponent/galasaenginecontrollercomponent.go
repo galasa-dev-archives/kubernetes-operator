@@ -8,12 +8,12 @@ package galasaenginecontrollercomponent
 import (
 	context "context"
 
-	apisgalasaecosystemv2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
-	versioned "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned"
-	v2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/informers/externalversions/galasaecosystem/v2alpha1"
-	client "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/client"
-	factory "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/informers/factory"
-	galasaecosystemv2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/listers/galasaecosystem/v2alpha1"
+	apisgalasaecosystemv2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	versioned "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned"
+	v2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/client/informers/externalversions/galasaecosystem/v2alpha1"
+	client "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/client"
+	factory "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/informers/factory"
+	galasaecosystemv2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/client/listers/galasaecosystem/v2alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	cache "k8s.io/client-go/tools/cache"
@@ -46,7 +46,7 @@ func Get(ctx context.Context) v2alpha1.GalasaEngineControllerComponentInformer {
 	untyped := ctx.Value(Key{})
 	if untyped == nil {
 		logging.FromContext(ctx).Panic(
-			"Unable to fetch github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/informers/externalversions/galasaecosystem/v2alpha1.GalasaEngineControllerComponentInformer from context.")
+			"Unable to fetch github.com/galasa-dev/kubernetes-operator/pkg/client/informers/externalversions/galasaecosystem/v2alpha1.GalasaEngineControllerComponentInformer from context.")
 	}
 	return untyped.(v2alpha1.GalasaEngineControllerComponentInformer)
 }

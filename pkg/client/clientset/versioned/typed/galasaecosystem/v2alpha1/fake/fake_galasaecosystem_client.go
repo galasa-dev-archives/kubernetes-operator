@@ -6,7 +6,7 @@
 package fake
 
 import (
-	v2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned/typed/galasaecosystem/v2alpha1"
+	v2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned/typed/galasaecosystem/v2alpha1"
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
 )

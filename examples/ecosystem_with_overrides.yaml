@@ -1,0 +1,74 @@
+apiVersion: galasa.dev/v2alpha1
+kind: GalasaEcosystem
+metadata:
+  name: <NAMEOFECOSYSTEM>
+  namespace: <NAMESPACE>
+spec:
+   galasaVersion: 0.20.0
+   busyboxImage: 'busybox:latest'
+   hostname: "<HOSTNAME>"
+   imagePullPolicy: ''
+   nodeSelector:
+    kubernetes.io/arch: amd64
+   simbank: true
+   simbankVersion: 0.15.0
+   storageClassName: "<STORAGECLASSNAME>"
+   # Anything specified in the componentSpec will override global parameters above
+   componentSpec:
+    api:
+      componentParms: null
+      image: 'icr.io/galasadev/galasa-boot-embedded-amd64:latest'
+      imagePullPolicy: ''
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      replicas: 1
+      storage: 1Gi
+      storageClassName: longhorn
+    cps:
+      image: 'quay.io/coreos/etcd:v3.4.3'
+      imagePullPolicy: ''
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      replicas: 1
+      storage: 1Gi
+      storageClassName: longhorn
+    enginecontroller:
+      image: 'icr.io/galasadev/galasa-boot-embedded-amd64:latest'
+      imagePullPolicy: ''
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      replicas: 1
+      storage: ''
+      storageClassName: ''
+    metrics:
+      image: 'icr.io/galasadev/galasa-boot-embedded-amd64:latest'
+      imagePullPolicy: ''
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      replicas: 1
+      storage: ''
+      storageClassName: ''
+    ras:
+      image: 'couchdb:2.3.1'
+      imagePullPolicy: ''
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      replicas: 1
+      storage: 5Gi
+      storageClassName: longhorn
+    resmon:
+      image: 'icr.io/galasadev/galasa-boot-embedded-amd64:latest'
+      imagePullPolicy: ''
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      replicas: 1
+      storage: ''
+      storageClassName: ''
+    simbankSpec:
+      image: 'icr.io/galasadev/galasa-simplatform-amd64:latest'
+      imagePullPolicy: ''
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      replicas: 1
+      storage: ''
+      storageClassName: ''

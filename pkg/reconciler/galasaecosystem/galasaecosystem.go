@@ -4,8 +4,10 @@
 package galasaecosystem
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"time"
 
@@ -14,16 +16,16 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
 
-	ecosystem "github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem"
-	"github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	ecosystem "github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem"
+	"github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
 
 	"knative.dev/pkg/controller"
 	"knative.dev/pkg/logging"
 	pkgreconciler "knative.dev/pkg/reconciler"
 
-	galasaecosystem "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned"
-	"github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned/scheme"
-	galasaecosystemlisters "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/listers/galasaecosystem/v2alpha1"
+	galasaecosystem "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned"
+	"github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned/scheme"
+	galasaecosystemlisters "github.com/galasa-dev/kubernetes-operator/pkg/client/listers/galasaecosystem/v2alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/selection"
@@ -51,8 +53,6 @@ type Reconciler struct {
 	EngineController *v2alpha1.GalasaEngineControllerComponent
 	Toolbox          *v2alpha1.GalasaToolboxComponent
 	Namespace        string
-
-	// cpsClient clientv3.
 }
 
 var (
@@ -62,6 +62,7 @@ var (
 	MetricsReady          = false
 	EngineControllerReady = false
 	ResmonReady           = false
+	ToolboxReady          = false
 	Bootstrap             = ""
 )
 
@@ -69,21 +70,26 @@ func (c *Reconciler) returnWithStatusUpdate(ctx context.Context, p *v2alpha1.Gal
 	l := logging.FromContext(ctx)
 	p, _ = c.GalasaEcosystemClientSet.GalasaV2alpha1().GalasaEcosystems(p.Namespace).Get(ctx, p.Name, v1.GetOptions{})
 	if Bootstrap != "" {
-		l.Infof("bootstrap foundy")
+		l.Infof("bootstrap found")
 		p.Status.BootstrapURL = Bootstrap
 	}
 
-	if CpsReady && RasReady && ApiReady && MetricsReady && EngineControllerReady && ResmonReady {
-		l.Infof("Ecossytem ready")
+	if CpsReady && RasReady && ApiReady && MetricsReady && EngineControllerReady && ResmonReady && ToolboxReady {
+		l.Infof("Ecosystem ready")
 		p.Status.Ready = true
 		c.GalasaEcosystemClientSet.GalasaV2alpha1().GalasaEcosystems(p.Namespace).UpdateStatus(ctx, p, v1.UpdateOptions{})
 	} else {
-		l.Infof("Ecossytem not ready")
+		l.Infof("Ecosystem not ready")
 		p.Status.Ready = false
 		c.GalasaEcosystemClientSet.GalasaV2alpha1().GalasaEcosystems(p.Namespace).UpdateStatus(ctx, p, v1.UpdateOptions{})
 	}
-	if !p.Status.Ready && err == nil {
+	if !p.Status.Ready {
 		l.Infof("Waiting for ready")
+		l.Infof("Status: cps-%v, ras-%v, api-%v, metrics-%v, engine-%v, resmon-%v, toolbox-%v", CpsReady, RasReady, ApiReady, MetricsReady, EngineControllerReady, ResmonReady, ToolboxReady)
+		return controller.NewRequeueAfter(time.Second * 3)
+	}
+	if err == nil {
+		l.Infof("Nil Error, requeue")
 		return controller.NewRequeueAfter(time.Second * 3)
 	}
 	l.Infof("Returning: %v", err)
@@ -95,8 +101,6 @@ func (c *Reconciler) ReconcileKind(ctx context.Context, p *v2alpha1.GalasaEcosys
 	logger := logging.FromContext(ctx)
 	selector := labels.NewSelector().Add(mustNewRequirement("galasa-ecosystem-name", selection.Equals, []string{p.Name}))
 	c.Namespace = p.Namespace
-
-	// c.cpsClient = cli
 
 	// Validate
 	logger.Infof("Validating")
@@ -163,6 +167,42 @@ func (c *Reconciler) ReconcileKind(ctx context.Context, p *v2alpha1.GalasaEcosys
 		return c.returnWithStatusUpdate(ctx, p, controller.NewPermanentError(err))
 	}
 
+	logger.Info("Managing Toolbox")
+	err = c.ManageToolbox(ctx, p, selector)
+	if err != nil {
+		return c.returnWithStatusUpdate(ctx, p, controller.NewPermanentError(err))
+	}
+	logger.Infof("The list of stuff %v", c.Toolbox)
+	if p.Spec.Simbank && p.Status.Ready {
+		// Setup test Stream
+		cli.KV.Put(ctx, "framework.test.streams", "simbank")
+		cli.KV.Put(ctx, "framework.test.stream.simbank.description", "SimBank Tests")
+		cli.KV.Put(ctx, "framework.test.stream.simbank.location", c.Api.Status.StatusParms["testcatalog"]+"/simbank")
+		cli.KV.Put(ctx, "framework.test.stream.simbank.obr", "mvn:dev.galasa/dev.galasa.simbank.obr/"+v2alpha1.SIMBANKVERSION+"/obr")
+		cli.KV.Put(ctx, "framework.test.stream.simbank.repo", "https://repo.maven.apache.org/maven2/")
+
+		//Test props
+		cli.KV.Put(ctx, "secure.credentials.SIMBANK.username", "IBMUSER")
+		cli.KV.Put(ctx, "secure.credentials.SIMBANK.password", "SYS1")
+
+		cli.KV.Put(ctx, "zos.dse.tag.SIMBANK.imageid", "SIMBANK")
+		cli.KV.Put(ctx, "zos.dse.tag.SIMBANK.clusterid", "SIMBANK")
+		cli.KV.Put(ctx, "zos.image.SIMBANK.ipv4.hostname", c.Toolbox.Status.StatusParms["simbank-hostname"])
+		cli.KV.Put(ctx, "zos.image.SIMBANK.telnet.port", c.Toolbox.Status.StatusParms["simbank-telnetport"])
+		cli.KV.Put(ctx, "zos.image.SIMBANK.telnet.tls", "false")
+		cli.KV.Put(ctx, "zos.image.SIMBANK.credentials", "SIMBANK")
+		cli.KV.Put(ctx, "zosmf.server.SIMBANK.images", "SIMBANK")
+		cli.KV.Put(ctx, "zosmf.server.SIMBANK.hostname", c.Toolbox.Status.StatusParms["simbank-hostname"])
+		cli.KV.Put(ctx, "zosmf.server.SIMBANK.port", c.Toolbox.Status.StatusParms["simbank-zosmfport"])
+		// Need to check this
+		cli.KV.Put(ctx, "zosmf.server.SIMBANK.https", "false")
+
+		cli.KV.Put(ctx, "simbank.dse.instance.name", "SIMBANK")
+		cli.KV.Put(ctx, "simbank.instance.SIMBANK.zos.image", "SIMBANK")
+		cli.KV.Put(ctx, "simbank.instance.SIMBANK.database.port", c.Toolbox.Status.StatusParms["simbank-databaseport"])
+		cli.KV.Put(ctx, "simbank.instance.SIMBANK.webnet.port", c.Toolbox.Status.StatusParms["simbank-webserviceport"])
+	}
+
 	return c.returnWithStatusUpdate(ctx, p, controller.NewPermanentError(nil))
 }
 
@@ -187,8 +227,8 @@ func (c *Reconciler) ManageCps(ctx context.Context, p *v2alpha1.GalasaEcosystem,
 				},
 				OwnerReferences: []v1.OwnerReference{
 					{
-						APIVersion:         "GalasaEcosystem",
-						Kind:               "galasa.dev/v2alpha1",
+						APIVersion:         "galasa.dev/v2alpha1",
+						Kind:               "GalasaEcosystem",
 						Name:               p.Name,
 						UID:                p.GetUID(),
 						Controller:         &t,
@@ -215,6 +255,7 @@ func (c *Reconciler) ManageCps(ctx context.Context, p *v2alpha1.GalasaEcosystem,
 		c.Cps = i
 		return controller.NewRequeueAfter(5 * time.Second)
 	}
+
 	l.Infof("CPS detected, checking state")
 	if len(cpslist) > 1 {
 		return controller.NewPermanentError(fmt.Errorf("too many cps's defined!"))
@@ -266,8 +307,8 @@ func (c *Reconciler) ManageRas(ctx context.Context, p *v2alpha1.GalasaEcosystem,
 				},
 				OwnerReferences: []v1.OwnerReference{
 					{
-						APIVersion:         "GalasaEcosystem",
-						Kind:               "galasa.dev/v2alpha1",
+						APIVersion:         "galasa.dev/v2alpha1",
+						Kind:               "GalasaEcosystem",
 						Name:               p.Name,
 						UID:                p.GetUID(),
 						Controller:         &t,
@@ -342,8 +383,8 @@ func (c *Reconciler) ManageApi(ctx context.Context, p *v2alpha1.GalasaEcosystem,
 				},
 				OwnerReferences: []v1.OwnerReference{
 					{
-						APIVersion:         "GalasaEcosystem",
-						Kind:               "galasa.dev/v2alpha1",
+						APIVersion:         "galasa.dev/v2alpha1",
+						Kind:               "GalasaEcosystem",
 						Name:               p.Name,
 						UID:                p.GetUID(),
 						Controller:         &t,
@@ -422,8 +463,8 @@ func (c *Reconciler) ManageMetrics(ctx context.Context, p *v2alpha1.GalasaEcosys
 				},
 				OwnerReferences: []v1.OwnerReference{
 					{
-						APIVersion:         "GalasaEcosystem",
-						Kind:               "galasa.dev/v2alpha1",
+						APIVersion:         "galasa.dev/v2alpha1",
+						Kind:               "GalasaEcosystem",
 						Name:               p.Name,
 						UID:                p.GetUID(),
 						Controller:         &t,
@@ -491,8 +532,8 @@ func (c *Reconciler) ManageResmon(ctx context.Context, p *v2alpha1.GalasaEcosyst
 				},
 				OwnerReferences: []v1.OwnerReference{
 					{
-						APIVersion:         "GalasaEcosystem",
-						Kind:               "galasa.dev/v2alpha1",
+						APIVersion:         "galasa.dev/v2alpha1",
+						Kind:               "GalasaEcosystem",
 						Name:               p.Name,
 						UID:                p.GetUID(),
 						Controller:         &t,
@@ -560,8 +601,8 @@ func (c *Reconciler) ManageEngineController(ctx context.Context, p *v2alpha1.Gal
 				},
 				OwnerReferences: []v1.OwnerReference{
 					{
-						APIVersion:         "GalasaEcosystem",
-						Kind:               "galasa.dev/v2alpha1",
+						APIVersion:         "galasa.dev/v2alpha1",
+						Kind:               "GalasaEcosystem",
 						Name:               p.Name,
 						UID:                p.GetUID(),
 						Controller:         &t,
@@ -608,6 +649,78 @@ func (c *Reconciler) ManageEngineController(ctx context.Context, p *v2alpha1.Gal
 			return controller.NewPermanentError(fmt.Errorf("failed to update enginecontroller: %v", err))
 		}
 	}
+	return nil
+}
+
+func (c *Reconciler) ManageToolbox(ctx context.Context, p *v2alpha1.GalasaEcosystem, selector labels.Selector) error {
+	logger := logging.FromContext(ctx)
+	toolboxlist, err := c.GalasaToolboxLister.List(selector)
+	if err != nil {
+		return controller.NewPermanentError(fmt.Errorf("failed to retrieve Toolbox: %v", err))
+	}
+
+	simbankSpec := p.Spec.ComponentsSpec["simbankSpec"]
+	simbankSpec.ComponentParms = map[string]string{"hostname": p.Spec.Hostname}
+
+	if len(toolboxlist) == 0 {
+		t := true
+		toolbox := &v2alpha1.GalasaToolboxComponent{
+			ObjectMeta: v1.ObjectMeta{
+				Name:      "toolbox-" + p.Name,
+				Namespace: p.Namespace,
+				Labels: map[string]string{
+					"galasa-ecosystem-name": p.Name,
+				},
+				OwnerReferences: []v1.OwnerReference{
+					{
+						APIVersion:         "galasa.dev/v2alpha1",
+						Kind:               "GalasaEcosystem",
+						Name:               p.Name,
+						UID:                p.GetUID(),
+						Controller:         &t,
+						BlockOwnerDeletion: &t,
+					},
+				},
+			},
+			Spec: v2alpha1.ToolboxSpec{
+				Simbank:     p.Spec.Simbank,
+				SimbankSpec: simbankSpec,
+			},
+		}
+		i, err := c.GalasaEcosystemClientSet.GalasaV2alpha1().GalasaToolboxComponents(p.Namespace).Create(ctx, toolbox, v1.CreateOptions{})
+		c.Toolbox = i
+		if err != nil {
+			return controller.NewPermanentError(fmt.Errorf("failed to create toolbox: %v", err))
+		}
+
+		// Adding the Simbank Test Catalog
+		testCatalogLocation := c.Api.Status.StatusParms["testcatalog"] + "/simbank"
+		client := &http.Client{}
+		req, err := http.NewRequest(http.MethodPut, testCatalogLocation, bytes.NewReader([]byte(v2alpha1.DEFAULTSIMBANKCATALOG)))
+		if err != nil {
+			controller.NewPermanentError(err)
+		}
+		req.Header.Set("Content-Type", "application/json")
+		logger.Info("Sending testcatalog request")
+		resp, err := client.Do(req)
+		if err != nil {
+			logger.Info("Failed", "resp", resp, "err", err)
+			return controller.NewPermanentError(err)
+		}
+		return nil
+	}
+
+	toolboxO := ecosystem.Toolbox(toolboxlist[0], c.GalasaEcosystemClientSet)
+	ToolboxReady = toolboxO.IsReady(ctx)
+	if !ToolboxReady {
+		return controller.NewRequeueAfter(time.Second * 5)
+	}
+	// Check changes, ready, requeue
+	// Coming back to the changes from here
+	if len(toolboxlist) > 1 {
+		return controller.NewPermanentError(fmt.Errorf("too many toolbox's defined!"))
+	}
+	c.Toolbox = toolboxlist[0]
 	return nil
 }
 

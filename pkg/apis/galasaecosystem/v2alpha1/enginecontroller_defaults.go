@@ -3,24 +3,28 @@
  */
 package v2alpha1
 
-func DefaultEngineController() ComponentSpec {
+func DefaultEngineController(c *GalasaEcosystemSpec) ComponentSpec {
 	return ComponentSpec{
 		Image:           CONTROLLERIMAGE,
 		Replicas:        &SINGLEREPLICA,
-		ImagePullPolicy: IMAGEPULLPOLICY,
+		ImagePullPolicy: c.ImagePullPolicy,
+		NodeSelector:    c.NodeSelector,
 	}
 }
 
-func SetEngineControllerDefaults(engiencontroller ComponentSpec) ComponentSpec {
-	if engiencontroller.Image == "" {
-		engiencontroller.Image = CONTROLLERIMAGE
+func SetEngineControllerDefaults(enginecontroller ComponentSpec, c *GalasaEcosystemSpec) ComponentSpec {
+	if enginecontroller.Image == "" {
+		enginecontroller.Image = CONTROLLERIMAGE
 	}
-	if engiencontroller.ImagePullPolicy == "" {
-		engiencontroller.ImagePullPolicy = IMAGEPULLPOLICY
+	if enginecontroller.ImagePullPolicy == "" {
+		enginecontroller.ImagePullPolicy = c.ImagePullPolicy
 	}
-	if engiencontroller.Replicas == nil {
-		engiencontroller.Replicas = &SINGLEREPLICA
+	if enginecontroller.Replicas == nil {
+		enginecontroller.Replicas = &SINGLEREPLICA
+	}
+	if enginecontroller.NodeSelector == nil {
+		enginecontroller.NodeSelector = c.NodeSelector
 	}
 
-	return engiencontroller
+	return enginecontroller
 }

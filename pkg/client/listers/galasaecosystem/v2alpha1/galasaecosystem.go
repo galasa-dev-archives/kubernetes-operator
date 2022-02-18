@@ -6,7 +6,7 @@
 package v2alpha1
 
 import (
-	v2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	v2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/client-go/tools/cache"

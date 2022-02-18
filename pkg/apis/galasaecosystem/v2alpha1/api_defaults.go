@@ -3,31 +3,35 @@
  */
 package v2alpha1
 
-func DefaultApi() ComponentSpec {
+func DefaultApi(c *GalasaEcosystemSpec) ComponentSpec {
 	return ComponentSpec{
 		Image:            APIIMAGE,
 		Replicas:         &SINGLEREPLICA,
-		ImagePullPolicy:  IMAGEPULLPOLICY,
+		ImagePullPolicy:  c.ImagePullPolicy,
 		Storage:          APISTORAGE,
-		StorageClassName: STORAGECLASSNAME,
+		StorageClassName: c.StorageClassName,
+		NodeSelector:     c.NodeSelector,
 	}
 }
 
-func SetApiDefaults(api ComponentSpec) ComponentSpec {
+func SetApiDefaults(api ComponentSpec, c *GalasaEcosystemSpec) ComponentSpec {
 	if api.Image == "" {
 		api.Image = APIIMAGE
 	}
 	if api.ImagePullPolicy == "" {
-		api.ImagePullPolicy = IMAGEPULLPOLICY
+		api.ImagePullPolicy = c.ImagePullPolicy
 	}
 	if api.Storage == "" {
 		api.Storage = APISTORAGE
 	}
 	if api.StorageClassName == "" {
-		api.StorageClassName = STORAGECLASSNAME
+		api.StorageClassName = c.StorageClassName
 	}
 	if api.Replicas == nil {
 		api.Replicas = &SINGLEREPLICA
+	}
+	if api.NodeSelector == nil {
+		api.NodeSelector = c.NodeSelector
 	}
 
 	return api

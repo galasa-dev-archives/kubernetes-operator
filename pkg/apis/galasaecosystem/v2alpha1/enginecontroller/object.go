@@ -7,8 +7,8 @@ import (
 	"context"
 	"reflect"
 
-	"github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
-	galasaecosystem "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned"
+	"github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	galasaecosystem "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
@@ -28,6 +28,7 @@ type EngineController struct {
 }
 
 func New(engineControllerCrd *v2alpha1.GalasaEngineControllerComponent, k galasaecosystem.Interface) *EngineController {
+	t := true
 	return &EngineController{
 		Ecosystemclient: k,
 		Namespace:       engineControllerCrd.Namespace,
@@ -36,8 +37,17 @@ func New(engineControllerCrd *v2alpha1.GalasaEngineControllerComponent, k galasa
 		Replicas:        engineControllerCrd.Spec.Replicas,
 		ImagePullPolicy: engineControllerCrd.Spec.ImagePullPolicy,
 		NodeSelector:    engineControllerCrd.Spec.NodeSelector,
-		Owner:           engineControllerCrd.OwnerReferences,
-		Bootstrap:       engineControllerCrd.Spec.ComponentParms["bootstrap"],
+		Owner: []v1.OwnerReference{
+			{
+				APIVersion:         "galasa.dev/v2alpha1",
+				Kind:               "GalasaEngineControllerComponent",
+				Name:               engineControllerCrd.Name,
+				UID:                engineControllerCrd.GetUID(),
+				Controller:         &t,
+				BlockOwnerDeletion: &t,
+			},
+		},
+		Bootstrap: engineControllerCrd.Spec.ComponentParms["bootstrap"],
 
 		Status: v2alpha1.ComponentStatus{
 			Ready: engineControllerCrd.Status.Ready,

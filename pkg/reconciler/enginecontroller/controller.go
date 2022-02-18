@@ -6,10 +6,10 @@ package enginecontroller
 import (
 	"context"
 
-	galasaenginecontrollerreconciler "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/reconciler/galasaecosystem/v2alpha1/galasaenginecontrollercomponent"
+	galasaenginecontrollerreconciler "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/reconciler/galasaecosystem/v2alpha1/galasaenginecontrollercomponent"
 
-	galasaecosystemclient "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/client"
-	galasaenginecontrollerinformer "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/informers/galasaecosystem/v2alpha1/galasaenginecontrollercomponent"
+	galasaecosystemclient "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/client"
+	galasaenginecontrollerinformer "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/informers/galasaecosystem/v2alpha1/galasaenginecontrollercomponent"
 
 	kubeclient "knative.dev/pkg/client/injection/kube/client"
 	"knative.dev/pkg/configmap"

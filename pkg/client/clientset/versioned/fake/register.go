@@ -6,7 +6,7 @@
 package fake
 
 import (
-	galasav2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	galasav2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"

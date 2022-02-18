@@ -15,9 +15,12 @@ const (
 
 var (
 	GALASAVERSION   string = "latest"
-	APIIMAGE        string = "docker.galasa.dev/galasadev/galasa-boot-embedded-amd64:" + GALASAVERSION
-	RESMONIMAGE     string = "docker.galasa.dev/galasadev/galasa-boot-embedded-amd64:" + GALASAVERSION
-	METRICSIMAGE    string = "docker.galasa.dev/galasadev/galasa-boot-embedded-amd64:" + GALASAVERSION
-	CONTROLLERIMAGE string = "docker.galasa.dev/galasadev/galasa-boot-embedded-amd64:" + GALASAVERSION
+	APIIMAGE        string = "icr.io/galasadev/galasa-boot-embedded-amd64:" + GALASAVERSION
+	RESMONIMAGE     string = "icr.io/galasadev/galasa-boot-embedded-amd64:" + GALASAVERSION
+	METRICSIMAGE    string = "icr.io/galasadev/galasa-boot-embedded-amd64:" + GALASAVERSION
+	CONTROLLERIMAGE string = "icr.io/galasadev/galasa-boot-embedded-amd64:" + GALASAVERSION
+	SIMBANKIMAGE    string = "icr.io/galasadev/galasa-simplatform-amd64:" + GALASAVERSION
 	SINGLEREPLICA   int32  = 1
+	SIMBANK         bool   = false
+	SIMBANKVERSION  string = "0.15.0"
 )

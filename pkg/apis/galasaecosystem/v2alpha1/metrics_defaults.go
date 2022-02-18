@@ -3,23 +3,27 @@
  */
 package v2alpha1
 
-func DefaultMetrics() ComponentSpec {
+func DefaultMetrics(c *GalasaEcosystemSpec) ComponentSpec {
 	return ComponentSpec{
 		Image:           METRICSIMAGE,
 		Replicas:        &SINGLEREPLICA,
-		ImagePullPolicy: IMAGEPULLPOLICY,
+		ImagePullPolicy: c.ImagePullPolicy,
+		NodeSelector:    c.NodeSelector,
 	}
 }
 
-func SetMetricsDefaults(metrics ComponentSpec) ComponentSpec {
+func SetMetricsDefaults(metrics ComponentSpec, c *GalasaEcosystemSpec) ComponentSpec {
 	if metrics.Image == "" {
 		metrics.Image = METRICSIMAGE
 	}
 	if metrics.ImagePullPolicy == "" {
-		metrics.ImagePullPolicy = IMAGEPULLPOLICY
+		metrics.ImagePullPolicy = c.ImagePullPolicy
 	}
 	if metrics.Replicas == nil {
 		metrics.Replicas = &SINGLEREPLICA
+	}
+	if metrics.NodeSelector == nil {
+		metrics.NodeSelector = c.NodeSelector
 	}
 
 	return metrics

@@ -11,9 +11,9 @@ import (
 	reflect "reflect"
 	strings "strings"
 
-	versionedscheme "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned/scheme"
-	client "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/client"
-	galasaapicomponent "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/informers/galasaecosystem/v2alpha1/galasaapicomponent"
+	versionedscheme "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned/scheme"
+	client "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/client"
+	galasaapicomponent "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/informers/galasaecosystem/v2alpha1/galasaapicomponent"
 	zap "go.uber.org/zap"
 	corev1 "k8s.io/api/core/v1"
 	labels "k8s.io/apimachinery/pkg/labels"

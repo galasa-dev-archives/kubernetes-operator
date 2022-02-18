@@ -3,31 +3,35 @@
  */
 package v2alpha1
 
-func DefaultRas() ComponentSpec {
+func DefaultRas(c *GalasaEcosystemSpec) ComponentSpec {
 	return ComponentSpec{
 		Image:            RASIMAGE,
 		Replicas:         &SINGLEREPLICA,
-		ImagePullPolicy:  IMAGEPULLPOLICY,
+		ImagePullPolicy:  c.ImagePullPolicy,
 		Storage:          RASSTORAGE,
-		StorageClassName: STORAGECLASSNAME,
+		StorageClassName: c.StorageClassName,
+		NodeSelector:     c.NodeSelector,
 	}
 }
 
-func SetRasDefaults(ras ComponentSpec) ComponentSpec {
+func SetRasDefaults(ras ComponentSpec, c *GalasaEcosystemSpec) ComponentSpec {
 	if ras.Image == "" {
 		ras.Image = RASIMAGE
 	}
 	if ras.ImagePullPolicy == "" {
-		ras.ImagePullPolicy = IMAGEPULLPOLICY
+		ras.ImagePullPolicy = c.ImagePullPolicy
 	}
 	if ras.Storage == "" {
 		ras.Storage = RASSTORAGE
 	}
 	if ras.StorageClassName == "" {
-		ras.StorageClassName = STORAGECLASSNAME
+		ras.StorageClassName = c.StorageClassName
 	}
 	if ras.Replicas == nil {
 		ras.Replicas = &SINGLEREPLICA
+	}
+	if ras.NodeSelector == nil {
+		ras.NodeSelector = c.NodeSelector
 	}
 
 	return ras

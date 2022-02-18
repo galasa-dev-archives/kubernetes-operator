@@ -8,8 +8,8 @@ package fake
 import (
 	context "context"
 
-	factoryfiltered "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/informers/factory/filtered"
-	filtered "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/injection/informers/galasaecosystem/v2alpha1/galasaresmoncomponent/filtered"
+	factoryfiltered "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/informers/factory/filtered"
+	filtered "github.com/galasa-dev/kubernetes-operator/pkg/client/injection/informers/galasaecosystem/v2alpha1/galasaresmoncomponent/filtered"
 	controller "knative.dev/pkg/controller"
 	injection "knative.dev/pkg/injection"
 	logging "knative.dev/pkg/logging"

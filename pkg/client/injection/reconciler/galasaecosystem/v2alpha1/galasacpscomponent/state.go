@@ -8,7 +8,7 @@ package galasacpscomponent
 import (
 	fmt "fmt"
 
-	v2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	v2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
 	types "k8s.io/apimachinery/pkg/types"
 	cache "k8s.io/client-go/tools/cache"
 	reconciler "knative.dev/pkg/reconciler"

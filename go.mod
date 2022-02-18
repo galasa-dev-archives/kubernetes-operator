@@ -1,4 +1,4 @@
-module github.com/galasa-dev/galasa-kubernetes-operator
+module github.com/galasa-dev/kubernetes-operator
 
 go 1.17
 

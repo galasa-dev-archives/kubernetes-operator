@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	"github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -18,9 +18,9 @@ import (
 	"knative.dev/pkg/logging"
 	pkgreconciler "knative.dev/pkg/reconciler"
 
-	ecosystem "github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem"
-	galasaecosystem "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned"
-	galasaecosystemlisters "github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/listers/galasaecosystem/v2alpha1"
+	ecosystem "github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem"
+	galasaecosystem "github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned"
+	galasaecosystemlisters "github.com/galasa-dev/kubernetes-operator/pkg/client/listers/galasaecosystem/v2alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/kubernetes"
@@ -41,12 +41,13 @@ func (c *Reconciler) ReconcileKind(ctx context.Context, p *v2alpha1.GalasaRasCom
 	for _, obj := range objects {
 		switch obj.GetObjectKind().GroupVersionKind() {
 		case schema.FromAPIVersionAndKind("v1", "Service"):
-			logger.Infof("Found service: %s", obj.(*corev1.Service).Name)
+			logger.Infof("Found service: %s", obj.(*corev1.Service))
 			service := obj.(*corev1.Service)
 			s, _ := c.KubeClientSet.CoreV1().Services(p.Namespace).Get(ctx, service.Name, v1.GetOptions{})
 			if s.Name == "" {
 				logger.Infof("Create service")
-				_, err := c.KubeClientSet.CoreV1().Services(p.Namespace).Create(ctx, service, v1.CreateOptions{})
+				svc, err := c.KubeClientSet.CoreV1().Services(p.Namespace).Create(ctx, service, v1.CreateOptions{})
+				logger.Info(svc)
 				if err != nil {
 					return controller.NewPermanentError(fmt.Errorf("failed to create service resources: %v", err))
 				}

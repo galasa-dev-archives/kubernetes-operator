@@ -6,8 +6,8 @@
 package v2alpha1
 
 import (
-	v2alpha1 "github.com/galasa-dev/galasa-kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
-	"github.com/galasa-dev/galasa-kubernetes-operator/pkg/client/clientset/versioned/scheme"
+	v2alpha1 "github.com/galasa-dev/kubernetes-operator/pkg/apis/galasaecosystem/v2alpha1"
+	"github.com/galasa-dev/kubernetes-operator/pkg/client/clientset/versioned/scheme"
 	rest "k8s.io/client-go/rest"
 )
 
