@@ -1,0 +1,504 @@
+#
+# Copyright contributors to the Galasa project 
+#
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: galasa
+  labels:
+    app.kubernetes.io/part-of: galasa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: galasa-ecosystem-operator
+  namespace: galasa
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/exec
+  - services
+  - services/finalizers
+  - endpoints
+  - events
+  - configmaps
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - daemonsets
+  - replicasets
+  - statefulsets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - "galasa.dev"
+  resources:
+  - "galasaecosystems"
+  - "galasacpscomponents"
+  - "galasarascomponents"
+  - "galasaresmoncomponents"
+  - "galasaapicomponents"
+  - "galasametricscomponents"
+  - "galasaenginecontrollercomponents"
+  - "galasatoolboxcomponents"
+  - "galasacpscomponents/status"
+  - "galasaecosystems/status"
+  - "galasarascomponents/status"
+  - "galasaresmoncomponents/status"
+  - "galasaapicomponents/status"
+  - "galasametricscomponents/status"
+  - "galasaenginecontrollercomponents/status"
+  - "galasatoolboxcomponents/status"
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - "coordination.k8s.io"
+  resources:
+    - leases
+  verbs:
+    - get
+    - create
+    - update
+---
+#
+# Copyright contributors to the Galasa project 
+#
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: galasa-ecosystem-operator
+  namespace: galasa
+---
+#
+# Copyright contributors to the Galasa project 
+#
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: galasa-ecosystem-operator
+  namespace: galasa
+subjects:
+- kind: ServiceAccount
+  name: galasa-ecosystem-operator
+roleRef:
+  kind: Role
+  name: galasa-ecosystem-operator
+  apiGroup: rbac.authorization.k8s.io
+---
+#
+# Copyright contributors to the Galasa project 
+#
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: config-logging
+  namespace: galasa
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+data:
+  loglevel.controller: info
+  loglevel.webhook: info
+  zap-logger-config: |
+    {
+      "level": "info",
+      "development": false,
+      "sampling": {
+        "initial": 100,
+        "thereafter": 100
+      },
+      "outputPaths": ["stdout"],
+      "errorOutputPaths": ["stderr"],
+      "encoding": "json",
+      "encoderConfig": {
+        "timeKey": "ts",
+        "levelKey": "level",
+        "nameKey": "logger",
+        "callerKey": "caller",
+        "messageKey": "msg",
+        "stacktraceKey": "stacktrace",
+        "lineEnding": "",
+        "levelEncoder": "",
+        "timeEncoder": "iso8601",
+        "durationEncoder": "",
+        "callerEncoder": ""
+      }
+    }
+---
+#
+# Copyright contributors to the Galasa project 
+#
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasaapicomponents.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        x-kubernetes-preserve-unknown-fields: true
+    subresources:
+      status: {}
+  names:
+    kind: GalasaApiComponent
+    plural: galasaapicomponents
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+#
+# Copyright contributors to the Galasa project 
+#
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasacpscomponents.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        x-kubernetes-preserve-unknown-fields: true
+    subresources:
+      status: {}
+  names:
+    kind: GalasaCpsComponent
+    plural: galasacpscomponents
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+#
+# Copyright contributors to the Galasa project 
+#
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasaenginecontrollercomponents.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        x-kubernetes-preserve-unknown-fields: true
+    subresources:
+      status: {}
+  names:
+    kind: GalasaEngineControllerComponent
+    plural: galasaenginecontrollercomponents
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+#
+# Copyright contributors to the Galasa project 
+#
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasametricscomponents.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        x-kubernetes-preserve-unknown-fields: true
+    subresources:
+      status: {}
+  names:
+    kind: GalasaMetricsComponent
+    plural: galasametricscomponents
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+#
+# Copyright contributors to the Galasa project 
+#
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasarascomponents.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        x-kubernetes-preserve-unknown-fields: true
+    subresources:
+      status: {}
+  names:
+    kind: GalasaRasComponent
+    plural: galasarascomponents
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+#
+# Copyright contributors to the Galasa project 
+#
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasaresmoncomponents.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        x-kubernetes-preserve-unknown-fields: true
+    subresources:
+      status: {}
+  names:
+    kind: GalasaResmonComponent
+    plural: galasaresmoncomponents
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+#
+# Copyright contributors to the Galasa project 
+#
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasatoolboxcomponents.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        type: object
+        x-kubernetes-preserve-unknown-fields: true
+    subresources:
+      status: {}
+  names:
+    kind: GalasaToolboxComponent
+    plural: galasatoolboxcomponents
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+#
+# Copyright contributors to the Galasa project 
+#
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: galasaecosystems.galasa.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: galasa
+    version: "v2alpha1"
+spec:
+  group: galasa.dev
+  versions:
+  - name: v2alpha1
+    served: true
+    storage: true
+    additionalPrinterColumns:
+      - name: Created
+        type: string
+        jsonPath: ".metadata.creationTimestamp"
+      - name: Ready
+        type: string
+        jsonPath: ".status.ready"
+      - name: BootstrapURL
+        type: string
+        jsonPath: ".status.bootstrapURL"
+    schema:
+      openAPIV3Schema:
+        type: object
+        x-kubernetes-preserve-unknown-fields: true
+    subresources:
+      status: {}
+  names:
+    kind: GalasaEcosystem
+    plural: galasaecosystems
+    categories:
+    - galasa
+    - galasa-ecosystems
+  scope: Namespaced
+---
+#
+# Copyright contributors to the Galasa project 
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: galasa-ecosystem-operator
+  namespace: galasa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: galasa-ecosystem-operator
+      app.kubernetes.io/component: ecosystem
+      app.kubernetes.io/instance: default
+      app.kubernetes.io/part-of: galasa
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: galasa-ecosystem-operator
+        app.kubernetes.io/component: ecosystem
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/version: "v2alpha1"
+        app.kubernetes.io/part-of: galasa
+        app: galasa-ecosystem-operator
+        version: "v2alpha1"
+    spec:
+      serviceAccountName: galasa-ecosystem-operator
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      containers:
+      - name: galasa-ecosystem-operator
+        image: icr.io/galasadev/galasa-kubernetes-operator-amd64:0.20.0
+        args:
+          - "-namespace"
+          - "galasa"
+        env:
+        - name: METRICS_DOMAIN
+          value: galasa.dev/ecosystem
+        - name: KUBERNETES_MIN_VERSION
+          value: 1.17.13
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - all
+          runAsUser: 65532
+          runAsGroup: 65532
