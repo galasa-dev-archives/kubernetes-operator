@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"go.etcd.io/etcd/clientv3"
@@ -244,7 +245,7 @@ func (c *Reconciler) ManageCps(ctx context.Context, p *v2alpha1.GalasaEcosystem,
 				StorageClassName: cpsSpec.StorageClassName,
 				NodeSelector:     cpsSpec.NodeSelector,
 				ComponentParms: map[string]string{
-					"hostname": p.Spec.Hostname,
+					"hostname": ensureProtocol(p.Spec.Hostname),
 				},
 			},
 		}
@@ -324,7 +325,7 @@ func (c *Reconciler) ManageRas(ctx context.Context, p *v2alpha1.GalasaEcosystem,
 				StorageClassName: rasSpec.StorageClassName,
 				NodeSelector:     rasSpec.NodeSelector,
 				ComponentParms: map[string]string{
-					"hostname": p.Spec.Hostname,
+					"hostname": ensureProtocol(p.Spec.Hostname),
 				},
 			},
 		}
@@ -401,7 +402,7 @@ func (c *Reconciler) ManageApi(ctx context.Context, p *v2alpha1.GalasaEcosystem,
 				NodeSelector:     apiSpec.NodeSelector,
 				ComponentParms: map[string]string{
 					"busyboxImage": p.Spec.BusyboxImage,
-					"hostname":     p.Spec.Hostname,
+					"hostname":     ensureProtocol(p.Spec.Hostname),
 					"cpsuri":       c.Cps.Status.StatusParms["cpsuri"],
 				},
 			},
@@ -660,7 +661,7 @@ func (c *Reconciler) ManageToolbox(ctx context.Context, p *v2alpha1.GalasaEcosys
 	}
 
 	simbankSpec := p.Spec.ComponentsSpec["simbankSpec"]
-	simbankSpec.ComponentParms = map[string]string{"hostname": p.Spec.Hostname}
+	simbankSpec.ComponentParms = map[string]string{"hostname": ensureProtocol(p.Spec.Hostname)}
 
 	if len(toolboxlist) == 0 {
 		t := true
@@ -771,6 +772,14 @@ func (c *Reconciler) LoadProperty(key, value string) error {
 	}
 	return nil
 
+}
+
+func ensureProtocol(url string) string {
+	if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
+		return url
+	} else {
+		return "http://" + url
+	}
 }
 
 func mustNewRequirement(key string, op selection.Operator, vals []string) labels.Requirement {
