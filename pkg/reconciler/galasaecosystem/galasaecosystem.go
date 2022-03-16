@@ -1,4 +1,6 @@
-/* Copyright contributors to the Galasa Project */
+/*
+ * Copyright contributors to the Galasa Project
+ */
 package galasaecosystem
 
 import (
