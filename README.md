@@ -1,3 +1,5 @@
+**This repository is no longer actively maintained therefore is being archived.**
+
 # Galasa Kubernetes operator
 This is a alpha level release of the kubernetes operator, moved and re-architected from galasa-dev/extensions repository.
 
